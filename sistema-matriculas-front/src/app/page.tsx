@@ -1,3 +1,4 @@
+import { Button } from "./components/button/Button";
 import Header from "./components/header";
 
 export default function RootLayout({
