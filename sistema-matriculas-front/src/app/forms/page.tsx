@@ -1,4 +1,5 @@
-import CardStudentType from "@/src/components/card-student-type/CardStudentType";
+import CardStudentType from "../components/card-student-type/CardStudentType";
+
 
 export default function Forms() {
     return (
