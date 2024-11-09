@@ -1,3 +1,4 @@
+import PurchaseConfirmation from "@/components/purchaseConfirmation/PurchaseConfirmation";
 import Header from "../components/header";
 
 export default function RootLayout({
@@ -8,7 +9,10 @@ export default function RootLayout({
   return (
     <>
       <Header />
-      <main className="min-h-screen">{children}</main>
+      <main className="flex justify-center items-center min-h-screen bg-gray-50">
+        <PurchaseConfirmation />
+      </main>
     </>
   );
 }
+
