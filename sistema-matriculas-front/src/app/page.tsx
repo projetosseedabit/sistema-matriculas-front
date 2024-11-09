@@ -1,3 +1,4 @@
+import { CardStudentType } from "@/components/card-student-type/CardStudentType";
 import Header from "../components/header";
 
 export default function RootLayout({
@@ -8,6 +9,7 @@ export default function RootLayout({
   return (
     <>
       <Header />
+      
       <main className="min-h-screen">{children}</main>
     </>
   );
