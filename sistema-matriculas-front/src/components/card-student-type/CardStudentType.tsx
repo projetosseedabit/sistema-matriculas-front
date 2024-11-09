@@ -1,10 +1,22 @@
-export default function CardStudentType() {
+import React from "react";
+
+interface CardStudentTypeProps {
+  label: string,
+  name: string,
+  value: string;
+    checked: boolean;
+    onChange: (value: string) => void;
+}
+
+
+export const CardStudentType: React.FC<CardStudentTypeProps> = ({label, name, value, checked, onChange }: CardStudentTypeProps) => {
     return (
       <>
-        <div className="border-solid border-2 bg-indigo-500">
-            <input type="checkbox" className="bg-blue-200"></input>
-            <p>Sou maior de idade, sou meu próprio responsável financeiro e quero me inscrever para a Isolada de Redação VK.</p>
-            <button className="bg-sky-500/100">test</button>
+        <div className="border-sky-950 border-2 rounded-md px-8 py-5 mx-60 flex space-x-8 ">
+            <input type="radio" className={'accent-sky-950 ${checked ? "accent-sky-950" : "accent-sky-950"} scale-125'} name={name} value={value} 
+                checked={checked} 
+                onChange={() => onChange(value)}></input>
+            <p className="text-sky-950 text-2xl font-normal">{label}</p>
         </div>
       </>
     )
