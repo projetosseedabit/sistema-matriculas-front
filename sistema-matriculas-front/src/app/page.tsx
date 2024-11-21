@@ -18,10 +18,11 @@ export default function RootLayout({
     <>
 
       <Header />
+      <main className="min-h-screen p-8">
       <ClassCard  value="underage"
       checked={selectedOption === "underage"}
       onChange={handleSelection} dayOfWeek={"Segunda-feira"} modality={"Presencial"} id={"0"} price={0} totalVacancies={45} vacanciesFilled={0} startTime={"19h"} endTime={"20h"}></ClassCard>
-      <main className="min-h-screen">{children}</main>
+      </main>
 
     </>
   );
