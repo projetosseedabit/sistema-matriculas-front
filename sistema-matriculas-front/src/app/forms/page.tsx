@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Header from "@/components/header";
 import { CardStudentType } from "@/components/card-student-type/CardStudentType";
 import Form from "@/components/form-student/Formstudent";
+import { Button } from "@/components//Button";
 
 interface FormField {
   label: string;
@@ -56,18 +57,53 @@ export default function Forms() {
     { label: "E-mail do pai", name: "fatherEmail", type: "email", placeholder: "Digite o e-mail do pai", value: "" },
   ];
 
-  const formFields: FormField[] = selectedOption === "underage"
-    ? [
-        { label: "Data de Nascimento", name: "birthDate", type: "text", placeholder: "DD/MM/AAAA", value: "", required: true },
-        ...commonFields,
-      ]
-    : selectedOption === "overEighteen"
-    ? [
-        { label: "Nome do Responsável", name: "responsibleName", type: "text", placeholder: "Digite o nome", value: "", required: true },
-        { label: "CPF do Responsável", name: "responsibleCPF", type: "text", placeholder: "Digite o CPF", value: "", required: true },
-        ...commonFields,
-      ]
-    : [];
+  const formFields: FormField[] = [
+    { label: "Data de Nascimento", name: "birthDate", type: "text", placeholder: "DD/MM/AAAA", value: "", required: true },
+    ...commonFields,
+  ];
+
+  const ContractBox = () => (
+    <div className="border-2 border-sky-950 rounded-md px-8 py-5 bg-[#003960] text-[#FFFFFF] mx-60">
+      <p className="text-xl font-normal">
+        Esse texto diz respeito ao contratado que ainda vai ser adiconado. Esse texto diz respeito ao contratado que ainda vai ser adiconado.
+        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
+        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
+        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
+        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
+        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
+        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
+        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
+        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
+        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
+        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
+        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
+      </p>
+    </div>
+  );
+
+  const ConfirmationBox = ({ onConfirm }: { onConfirm: (isChecked: boolean) => void }) => {
+    const [isChecked, setIsChecked] = useState(false);
+
+    const handleCheckboxChange = () => {
+      const newCheckedState = !isChecked;
+      setIsChecked(newCheckedState);
+      onConfirm(newCheckedState);
+    };
+
+    return (
+      <div className="border-sky-950 border-2 rounded-md px-8 py-5 mx-60 flex space-x-8">
+        <input
+          type="radio"
+          className={'accent-sky-950 ${isChecked ? "accent-sky-950" : "accent-sky-950"} scale-125'}
+          checked={isChecked}
+          onChange={handleCheckboxChange}
+        />
+        <p className="text-sky-950 text-2xl font-normal">
+          Eu aceito os termos do contrato.
+        </p>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -79,23 +115,56 @@ export default function Forms() {
         <CardStudentType
           label="Sou maior de idade, sou meu próprio responsável financeiro e quero me inscrever para a Isolada de Redação VK."
           name="studentType"
-          value="underage"
-          checked={selectedOption === "underage"}
+          value="overEighteen"
+          checked={selectedOption === "overEighteen"}
           onChange={handleSelection}
         />
         <CardStudentType
           label="Sou pai/responsável e quero matricular filho(a) ou alguém de minha responsabilidade para a Isolada de Redação VK."
           name="studentType"
-          value="overEighteen"
-          checked={selectedOption === "overEighteen"}
+          value="underage"
+          checked={selectedOption === "underage"}
           onChange={handleSelection}
         />
       </div>
 
-      {selectedOption && formFields.length > 0 && (
+      {selectedOption === "overEighteen" && (
         <div className="mt-10 space-y-8">
+          <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+            Dados do aluno
+          </h2>
           <Form fields={formFields} onSubmit={handleSubmit} />
+          <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+            Minuta do contrato
+          </h2>
+          <ContractBox />
+          <ConfirmationBox onConfirm={(isChecked) => console.log("Confirmação:", isChecked)} />
+          <div className="flex justify-between mx-60 mt-8">
+          <Button color="bg-[#003960]" label="Voltar" />
+          <Button color="bg-[#FFA12B]" label="Avançar" />
+          </div>
+        </div>
+      )}
+
+      {selectedOption === "underage" && (
+        <div className="mt-10 space-y-8">
+          <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+            Dados do aluno
+          </h2>
+          <Form fields={formFields} onSubmit={handleSubmit} />
+          <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+            Dados do responsável
+          </h2>
           <Form fields={parentFields} onSubmit={handleSubmit} />
+          <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+            Minuta do contrato
+          </h2>
+          <ContractBox />
+          <ConfirmationBox onConfirm={(isChecked) => console.log("Confirmação:", isChecked)} />
+          <div className="flex justify-between mx-60 mt-8">
+          <Button color="bg-[#003960]" label="Voltar" />
+          <Button color="bg-[#FFA12B]" label="Avançar" />
+          </div>
         </div>
       )}
     </>
