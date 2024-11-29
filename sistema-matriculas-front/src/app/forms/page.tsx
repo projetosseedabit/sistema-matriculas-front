@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Header from "@/components/header";
 import { CardStudentType } from "@/components/card-student-type/CardStudentType";
 import Form from "@/components/form-student/Formstudent";
+import { Button } from "@/components//Button";
 
 import { ProgressBar } from "@/components/progress-bar/progress-bar"; // Importe o componente da barra de progresso
 
