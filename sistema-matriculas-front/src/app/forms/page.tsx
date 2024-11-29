@@ -68,23 +68,23 @@ export default function Forms() {
   ];
 
   const ContractBox = () => (
-    <div className="border-2 border-sky-950 rounded-md px-8 py-5 bg-[#003960] text-[#FFFFFF] mx-60">
-      <p className="text-xl font-normal">
-        Esse texto diz respeito ao contratado que ainda vai ser adiconado. Esse texto diz respeito ao contratado que ainda vai ser adiconado.
-        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
-        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
-        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
-        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
-        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
-        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
-        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
-        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
-        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
-        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
-        Esse texto diz respeito ao contratado que ainda vai ser adiconado.Esse texto diz respeito ao contratado que ainda vai ser adiconado.
+    <div className="border-2 border-sky-950 rounded-md px-4 sm:px-6 lg:px-8 py-5 bg-[#003960] text-[#FFFFFF] mx-4 sm:mx-8 md:mx-16 lg:mx-60">
+      <p className="text-base sm:text-lg lg:text-xl font-normal leading-relaxed">
+        Esse texto diz respeito ao contratado que ainda vai ser adicionado. Esse texto diz respeito ao contratado que ainda vai ser adicionado.
+        Esse texto diz respeito ao contratado que ainda vai ser adicionado. Esse texto diz respeito ao contratado que ainda vai ser adicionado.
+        Esse texto diz respeito ao contratado que ainda vai ser adicionado. Esse texto diz respeito ao contratado que ainda vai ser adicionado.
+        Esse texto diz respeito ao contratado que ainda vai ser adicionado. Esse texto diz respeito ao contratado que ainda vai ser adicionado.
+        Esse texto diz respeito ao contratado que ainda vai ser adicionado. Esse texto diz respeito ao contratado que ainda vai ser adicionado.
+        Esse texto diz respeito ao contratado que ainda vai ser adicionado. Esse texto diz respeito ao contratado que ainda vai ser adicionado.
+        Esse texto diz respeito ao contratado que ainda vai ser adicionado. Esse texto diz respeito ao contratado que ainda vai ser adicionado.
+        Esse texto diz respeito ao contratado que ainda vai ser adicionado. Esse texto diz respeito ao contratado que ainda vai ser adicionado.
+        Esse texto diz respeito ao contratado que ainda vai ser adicionado. Esse texto diz respeito ao contratado que ainda vai ser adicionado.
+        Esse texto diz respeito ao contratado que ainda vai ser adicionado. Esse texto diz respeito ao contratado que ainda vai ser adicionado.
+        Esse texto diz respeito ao contratado que ainda vai ser adicionado.
       </p>
     </div>
-  );
+);
+
 
   const ConfirmationBox = ({ onConfirm }: { onConfirm: (isChecked: boolean) => void }) => {
     const [isChecked, setIsChecked] = useState(false);
@@ -97,95 +97,106 @@ export default function Forms() {
 
 
     return (
-      <div className="border-sky-950 border-2 rounded-md px-8 py-5 mx-60 flex space-x-8">
+      <div className="border-sky-950 border-2 rounded-md px-4 sm:px-6 lg:px-8 py-5 mx-4 sm:mx-8 md:mx-16 lg:mx-32 xl:mx-60 flex items-center space-x-4 sm:space-x-6">
         <input
           type="radio"
-          className={'accent-sky-950 ${isChecked ? "accent-sky-950" : "accent-sky-950"} scale-125'}
+          className="accent-sky-950 scale-125"
           checked={isChecked}
           onChange={handleCheckboxChange}
         />
-        <p className="text-sky-950 text-2xl font-normal">
+        <p className="text-sky-950 text-base sm:text-lg lg:text-2xl xl:text-3xl font-normal">
           Eu aceito os termos do contrato.
         </p>
       </div>
+
+    
+    
     );
   };
 
   return (
     <>
-      <Header />
-      
-      {/* Barra de progresso entre a navbar e o formulário */}
-      <ProgressBar currentStep={2} />  {/* Passando o estado atual para a barra de progresso */}
-      
-      <h1 className="text-sky-950 text-4xl text-center font-light py-8">
-        Preencha o formulário
-      </h1>
-      
-      <div className="space-y-8">
-        <CardStudentType
-          label="Sou maior de idade, sou meu próprio responsável financeiro e quero me inscrever para a Isolada de Redação VK."
-          name="studentType"
-          value="overEighteen"
-          checked={selectedOption === "overEighteen"}
-          onChange={handleSelection}
-        />
-        <CardStudentType
-          label="Sou pai/responsável e quero matricular filho(a) ou alguém de minha responsabilidade para a Isolada de Redação VK."
-          name="studentType"
-          value="underage"
-          checked={selectedOption === "underage"}
-          onChange={handleSelection}
-        />
+  <Header />
+  
+  {/* Barra de progresso entre a navbar e o formulário */}
+  <ProgressBar currentStep={2} />  {/* Passando o estado atual para a barra de progresso */}
+  
+  <h1 className="text-sky-950 text-4xl text-center font-light py-8">
+    Preencha o formulário
+  </h1>
+  
+  <div className="space-y-8">
+    <CardStudentType
+      label="Sou maior de idade, sou meu próprio responsável financeiro e quero me inscrever para a Isolada de Redação VK."
+      name="studentType"
+      value="overEighteen"
+      checked={selectedOption === "overEighteen"}
+      onChange={handleSelection}
+    />
+    <CardStudentType
+      label="Sou pai/responsável e quero matricular filho(a) ou alguém de minha responsabilidade para a Isolada de Redação VK."
+      name="studentType"
+      value="underage"
+      checked={selectedOption === "underage"}
+      onChange={handleSelection}
+    />
+  </div>
+
+  {selectedOption === "overEighteen" && (
+    <div className="mt-10 space-y-8">
+      <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+        Dados do aluno
+      </h2>
+      <Form fields={formFields} onSubmit={handleSubmit} />
+      <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+        Minuta do contrato
+      </h2>
+      <ContractBox />
+      <ConfirmationBox onConfirm={(isChecked) => console.log("Confirmação:", isChecked)} />
+      <div className="flex flex-col sm:flex-row sm:justify-between mx-4 sm:mx-8 lg:mx-60 mt-8">
+        <Link href="/">
+          <Button color="bg-[#003960]" label="Voltar" />
+        </Link>
+        <Link href="/purchaseConfirmationPage">
+          <Button color="bg-[#FFA12B]" label="Avançar" />
+        </Link>
       </div>
+    </div>
+  )}
 
-      {selectedOption === "overEighteen" && (
-        <div className="mt-10 space-y-8">
-          <h2 className="text-sky-950 text-3xl text-center font-light py-4">
-            Dados do aluno
-          </h2>
-          <Form fields={formFields} onSubmit={handleSubmit} />
-          <h2 className="text-sky-950 text-3xl text-center font-light py-4">
-            Minuta do contrato
-          </h2>
-          <ContractBox />
-          <ConfirmationBox onConfirm={(isChecked) => console.log("Confirmação:", isChecked)} />
-          <div className="flex justify-between mx-60 mt-8">
-          <Link href="/">
-          <Button color="bg-[#003960]" label="Voltar" />
-          </Link>
-          <Link href="/purchaseConfirmationPage">
-          <Button color="bg-[#FFA12B]" label="Avançar" />
-          </Link>
-          </div>
-        </div>
-      )}
+  {selectedOption === "underage" && (
+    <div className="mt-10 space-y-8">
+      <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+        Dados do aluno
+      </h2>
+      <Form fields={formFields} onSubmit={handleSubmit} />
+      <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+        Dados do responsável
+      </h2>
+      <Form fields={parentFields} onSubmit={handleSubmit} />
+      <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+        Minuta do contrato
+      </h2>
+      <ContractBox />
+      <ConfirmationBox onConfirm={(isChecked) => console.log("Confirmação:", isChecked)} />
+      <div className="flex flex-col sm:flex-row sm:justify-between mx-4 sm:mx-8 lg:mx-60 mt-8 space-y-4 sm:space-y-0 sm:space-x-4">
+  <Link href="/">
+    <Button
+      color="bg-[#003960]"
+      label="Voltar"
+    />
+  </Link>
+  <Link href="/purchaseConfirmationPage">
+    <Button
+      color="bg-[#FFA12B]"
+      label="Avançar"
+    />
+  </Link>
+</div>
 
-      {selectedOption === "underage" && (
-        <div className="mt-10 space-y-8">
-          <h2 className="text-sky-950 text-3xl text-center font-light py-4">
-            Dados do aluno
-          </h2>
-          <Form fields={formFields} onSubmit={handleSubmit} />
-          <h2 className="text-sky-950 text-3xl text-center font-light py-4">
-            Dados do responsável
-          </h2>
-          <Form fields={parentFields} onSubmit={handleSubmit} />
-          <h2 className="text-sky-950 text-3xl text-center font-light py-4">
-            Minuta do contrato
-          </h2>
-          <ContractBox />
-          <ConfirmationBox onConfirm={(isChecked) => console.log("Confirmação:", isChecked)} />
-          <div className="flex justify-between mx-60 mt-8">
-          <Link href="/">
-          <Button color="bg-[#003960]" label="Voltar" />
-          </Link>
-          <Link href="/purchaseConfirmationPage">
-          <Button color="bg-[#FFA12B]" label="Avançar" />
-          </Link>
-          </div>
-        </div>
-      )}
-    </>
+    </div>
+  )}
+</>
+
   );
 }
