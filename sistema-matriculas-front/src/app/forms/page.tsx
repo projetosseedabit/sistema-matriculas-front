@@ -5,6 +5,11 @@ import { CardStudentType } from "@/components/card-student-type/CardStudentType"
 import Form from "@/components/form-student/Formstudent";
 import { Button } from "@/components//Button";
 
+import { ProgressBar } from "@/components/progress-bar/progress-bar"; // Importe o componente da barra de progresso
+
+import { Button } from "@/components//Button";
+
+
 interface FormField {
   label: string;
   name: string;
@@ -108,9 +113,14 @@ export default function Forms() {
   return (
     <>
       <Header />
+      
+      {/* Barra de progresso entre a navbar e o formulário */}
+      <ProgressBar currentStep={2} />  {/* Passando o estado atual para a barra de progresso */}
+      
       <h1 className="text-sky-950 text-4xl text-center font-light py-8">
         Preencha o formulário
       </h1>
+      
       <div className="space-y-8">
         <CardStudentType
           label="Sou maior de idade, sou meu próprio responsável financeiro e quero me inscrever para a Isolada de Redação VK."
