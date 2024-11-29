@@ -1,92 +1,69 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ClassCard } from "@/components/class-card/class-card";
 import Header from "../components/header";
 import { ProgressBar } from "@/components/progress-bar/progress-bar";
+import { Button } from "@/components/Button";
+import Link from "next/link";
+
 
 interface Class {
-  id: string; // Identificador único da turma
-  dayOfWeek: string;
-  modality: string;
-  totalVacancies: number;
-  vacanciesFilled: number;
-  startTime: string;
-  endTime: string;
-  price: number;
+  id: number;
+  fullName: string;
+  lessonSchedule: string;
+  mode: ModeEnum;
+  maxSeats: number | null;
+  availableSeats: number | null;
+  createdAt: Date;
 }
 
+export enum ModeEnum {
+  IN_PERSON = "Presencial",
+  ONLINE = "On-line",
+}
+
+const getDayName = (lessonSchedule: string): string => {
+  return lessonSchedule.split(" ")[0]; // Retorna o dia da semana
+};
+
+const getTime = (lessonSchedule: string): string => {
+  return lessonSchedule.split(" ").slice(1).join(" ").trim(); // Extrai tudo após o primeiro espaço
+};
+
 export default function RootLayout() {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [classes, setClasses] = useState<Class[]>([]);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
 
-  const handleSelection = (value: string) => {
-    setSelectedOption(value);
-    console.log(value);
+  // Função que será chamada ao clicar no botão de avançar
+
+
+  useEffect(() => {
+
+    // Fetch para buscar os dados do backend
+    const fetchClasses = async () => {
+      try {
+        const response = await fetch("https://king-prawn-app-3bepj.ondigitalocean.app/class");
+        const data = await response.json();
+
+        // Mapeia os dados para o formato esperado, convertendo createdAt para Date
+        const formattedClasses = data.allClass.map((classData: Class) => ({
+          ...classData,
+          createdAt: new Date(classData.createdAt),
+        }));
+        setClasses(formattedClasses);
+      } catch (error) {
+        console.error("Erro ao buscar as classes:", error);
+      }
+    };
+
+    fetchClasses();
+  }, []);
+
+  const handleSelection = (value: number) => {
+    setSelectedOption(value); // Atualiza a turma selecionada
+    console.log(value); // Exibe no console para debug
   };
-
-  // Lista de turmas conforme especificado
-  const classes: Class[] = [
-    {
-      id: "1",
-      dayOfWeek: "Segunda-feira",
-      modality: "Presencial",
-      totalVacancies: 45,
-      vacanciesFilled: 0,
-      startTime: "19h",
-      endTime: "21h",
-      price: 190,
-    },
-    {
-      id: "2",
-      dayOfWeek: "Terça-feira",
-      modality: "Presencial",
-      totalVacancies: 45,
-      vacanciesFilled: 0,
-      startTime: "19h",
-      endTime: "21h",
-      price: 190,
-    },
-    {
-      id: "3",
-      dayOfWeek: "Quarta-feira",
-      modality: "Presencial",
-      totalVacancies: 45,
-      vacanciesFilled: 0,
-      startTime: "19h",
-      endTime: "21h",
-      price: 190,
-    },
-    {
-      id: "4",
-      dayOfWeek: "Quinta-feira",
-      modality: "Presencial",
-      totalVacancies: 45,
-      vacanciesFilled: 0,
-      startTime: "19h",
-      endTime: "21h",
-      price: 190,
-    },
-    {
-      id: "5",
-      dayOfWeek: "Sexta-feira",
-      modality: "Presencial",
-      totalVacancies: 45,
-      vacanciesFilled: 0,
-      startTime: "14h",
-      endTime: "16h",
-      price: 190,
-    },
-    {
-      id: "6",
-      dayOfWeek: "Sexta-feira",
-      modality: "Online",
-      totalVacancies: 30,
-      vacanciesFilled: 0,
-      startTime: "19h",
-      endTime: "20:30h",
-      price: 150,
-    },
-  ];
 
   // Define o passo atual da barra de progresso
   const currentStep = 1;
@@ -94,7 +71,6 @@ export default function RootLayout() {
   return (
     <>
       <Header />
-      {/* Barra de progresso */}
       <ProgressBar currentStep={currentStep} />
       <main className="min-h-screen p-8">
         {/* Renderiza dinamicamente os cards das turmas */}
@@ -105,16 +81,20 @@ export default function RootLayout() {
               value={classData.id}
               checked={selectedOption === classData.id}
               onChange={handleSelection}
-              dayOfWeek={classData.dayOfWeek}
-              modality={classData.modality}
-              totalVacancies={classData.totalVacancies}
-              vacanciesFilled={classData.vacanciesFilled}
-              startTime={classData.startTime}
-              endTime={classData.endTime}
-              price={classData.price}
+              dayOfWeek={getDayName(classData.lessonSchedule)}
+              modality={classData.mode}
+              totalVacancies={classData.maxSeats}
+              vacanciesFilled={classData.availableSeats}
+              time={getTime(classData.lessonSchedule)}
+              price={90} // Exemplo de valor fixo
             />
           </div>
         ))}
+        <div className="flex justify-center mx-60 mt-8">
+          <Link href="/forms">
+          <Button color="bg-[#FFA12B]" label="Avançar"/>
+          </Link>
+        </div>
       </main>
     </>
   );

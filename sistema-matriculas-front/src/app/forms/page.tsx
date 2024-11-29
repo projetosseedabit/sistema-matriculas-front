@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from "react";
+import React, {useState } from "react";
 import Header from "@/components/header";
 import { CardStudentType } from "@/components/card-student-type/CardStudentType";
 import Form from "@/components/form-student/Formstudent";
@@ -7,6 +7,7 @@ import Form from "@/components/form-student/Formstudent";
 import { ProgressBar } from "@/components/progress-bar/progress-bar"; // Importe o componente da barra de progresso
 
 import { Button } from "@/components//Button";
+import Link from "next/link";
 
 
 interface FormField {
@@ -94,6 +95,7 @@ export default function Forms() {
       onConfirm(newCheckedState);
     };
 
+
     return (
       <div className="border-sky-950 border-2 rounded-md px-8 py-5 mx-60 flex space-x-8">
         <input
@@ -149,8 +151,12 @@ export default function Forms() {
           <ContractBox />
           <ConfirmationBox onConfirm={(isChecked) => console.log("Confirmação:", isChecked)} />
           <div className="flex justify-between mx-60 mt-8">
+          <Link href="/">
           <Button color="bg-[#003960]" label="Voltar" />
+          </Link>
+          <Link href="/purchaseConfirmationPage">
           <Button color="bg-[#FFA12B]" label="Avançar" />
+          </Link>
           </div>
         </div>
       )}
@@ -171,8 +177,12 @@ export default function Forms() {
           <ContractBox />
           <ConfirmationBox onConfirm={(isChecked) => console.log("Confirmação:", isChecked)} />
           <div className="flex justify-between mx-60 mt-8">
+          <Link href="/">
           <Button color="bg-[#003960]" label="Voltar" />
+          </Link>
+          <Link href="/purchaseConfirmationPage">
           <Button color="bg-[#FFA12B]" label="Avançar" />
+          </Link>
           </div>
         </div>
       )}
