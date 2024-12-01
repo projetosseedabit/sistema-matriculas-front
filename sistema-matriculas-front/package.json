@@ -10,6 +10,7 @@
     "mock-api": "json-server --watch db.json --port 5000"
   },
   "dependencies": {
+    "jose": "^5.9.6",
     "next": "15.0.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
