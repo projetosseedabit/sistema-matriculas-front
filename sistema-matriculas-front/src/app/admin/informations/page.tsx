@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Logo from "../../../../public/vercel.svg";
 
 export default function Informations() {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImFkbWluIiwiaWF0IjoxNzMzMDE0NjczLCJleHAiOjE3MzMwMTgyNzN9.qTBscRz2cHRVphwF-RgNiqjdj6gub-KX2nQqL_mqkmQ";
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImFkbWluIiwiaWF0IjoxNzMzMDgxMTkxLCJleHAiOjE3MzMwODQ3OTF9.ZZ6Hi65lKEj3uIyg3HU7QC7q3SNA23exNyiG3Rps29I";
     
     const [data, setData] = useState<Registration[]>([]);
     const [filteredData, setFilteredData] = useState<Registration[]>([]);
@@ -241,9 +241,10 @@ export default function Informations() {
                                         <td>{item.responsibleContact}</td>
                                         <td>{item.paymentMethod}</td>
                                         <td>{item.paymentValue}</td>
+                                        
                                         <td>
                                             <button className="text-red-500" onClick={() => alert(`Deseja excluir aluno ${item.studentId}?`)}>
-                                                Ação
+                                                Excluir 
                                             </button>
                                         </td>
                                     </tr>
