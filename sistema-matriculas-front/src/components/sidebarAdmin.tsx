@@ -13,7 +13,7 @@ const Sidebar: React.FC = () => {
   ];
 
   return (
-    <aside className="fixed top-0 left-0 w-64 bg-blue-900 text-white h-full p-6 flex flex-col justify-between">
+    <aside className="sticky top-0 left-0 w-64 bg-blue-900 text-white h-full p-6 flex flex-col justify-between">
       <div>
 
         <div className="flex flex-col items-center mb-8">
@@ -32,8 +32,8 @@ const Sidebar: React.FC = () => {
                   onClick={() => router.push(item.route)}
                   className={`w-full text-center border-2 rounded px-4 py-2 font-medium ${
                     pathname === item.route
-                      ? "bg-orange-500 text-blue-900 border-orange-500"
-                      : "bg-transparent text-white border-orange-500 hover:bg-orange-500 hover:text-blue-900"
+                      ? "bg-laranja text-azul border-laranja"
+                      : "bg-transparent text-white border-laranja hover:bg-laranja hover:text-azul"
                   }`}
                 >
                   {item.name}
