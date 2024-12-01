@@ -1,42 +1,49 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { useEffect } from "react";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
-    }
+const CheckoutPage = () => {
+    useEffect(() => {
+        const script = document.createElement("script");
+        script.src = "https://sdk.mercadopago.com/js/v2";
+        script.async = true;
+        document.body.appendChild(script);
 
-    try {
-        const { title, price } = req.body;
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []);
 
-        const ACCESS_TOKEN = process.env.MERCADO_PAGO_ACCESS_TOKEN;
-        const response = await fetch('https://api.mercadopago.com/checkout/preferences', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${ACCESS_TOKEN}`,
-            },
-            body: JSON.stringify({
-                items: [
-                    {
-                        title,
-                        unit_price: price,
-                        quantity: 1,
-                        currency_id: 'BRL',
+    useEffect(() => {
+        const initializeMercadoPago = () => {
+            if (window.MercadoPago) {
+                const mp = window.MercadoPago(process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY || "", {
+                    locale: "pt-BR",
+                });
+
+                // Configura o botão dinâmico para abrir o Checkout Pro
+                mp.checkout({
+                    preference: {
+                        id: "PREFERENCE_ID_DO_BACKEND", // Substituir pela ID gerada no backend
                     },
-                ],
-                back_urls: {
-                    success: `${process.env.NEXT_PUBLIC_BASE_URL}/confirmacao-pagamento`,
-                    failure: `${process.env.NEXT_PUBLIC_BASE_URL}/inicio`,
-                    pending: `${process.env.NEXT_PUBLIC_BASE_URL}/confirmacao-pagamento`,
-                },
-                auto_return: 'approved',
-            }),
-        });
+                    autoOpen: true, // Abre automaticamente o checkout
+                });
+            }
+        };
 
-        const data = await response.json();
-        res.status(200).json({ init_point: data.init_point });
-    } catch (error) {
-        console.error('Erro ao criar preferência:', error);
-        res.status(500).json({ error: 'Erro ao criar a preferência de pagamento.' });
-    }
-}
+        // Aguarda o carregamento do script para inicializar o SDK
+        if (document.readyState === "complete") {
+            initializeMercadoPago();
+        } else {
+            window.addEventListener("load", initializeMercadoPago);
+            return () => window.removeEventListener("load", initializeMercadoPago);
+        }
+    }, []);
+
+    return (
+        <div className="checkout-container">
+            <h1 className="text-2xl font-bold text-center">Pagamento do Curso</h1>
+            <div id="button-checkout" className="mt-8"></div>
+        </div>
+    );
+};
+
+export default CheckoutPage;
