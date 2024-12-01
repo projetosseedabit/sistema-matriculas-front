@@ -14,9 +14,28 @@ export async function middleware(request: NextRequest) {
     }
 
     if (path.startsWith("/login")) {
-        return NextResponse.next();
+        if (!token) {
+            return NextResponse.next();
+        }
+
+        try {
+            const secret = process.env.JWT_SECRET;
+            if (!secret) {
+                throw new Error("JWT_SECRET is not defined");
+            }
+
+            await jose.jwtVerify(token, new TextEncoder().encode(secret));
+
+            return NextResponse.redirect(new URL("/admin", request.url));
+        } catch (error) {
+            console.error(error);
+            return NextResponse.redirect(
+                new URL(redirectURLString, request.url)
+            );
+        }
     }
 
+    // Path começa com /admin
     if (!token) {
         return NextResponse.redirect(new URL(redirectURLString, request.url));
     }
@@ -28,15 +47,11 @@ export async function middleware(request: NextRequest) {
         }
         await jose.jwtVerify(token, new TextEncoder().encode(secret));
 
-        if (path.startsWith("/login")) {
-            return NextResponse.redirect(new URL("/admin", request.url));
-        }
+        return NextResponse.next();
     } catch (error) {
         console.error(error);
         return NextResponse.redirect(new URL(redirectURLString, request.url));
     }
-
-    return NextResponse.next();
 }
 
 export const config = {
