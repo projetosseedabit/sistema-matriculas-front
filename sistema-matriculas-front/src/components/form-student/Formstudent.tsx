@@ -114,14 +114,6 @@ const Form: React.FC<FormProps> = ({ fields, onSubmit }) => {
           </div>
         ))}
       </div>
-      <div className="flex justify-center mt-6">
-        <button
-          type="submit"
-          className="bg-sky-950 text-white py-2 px-4 rounded-md"
-        >
-          Enviar
-        </button>
-      </div>
     </form>
   );
 };

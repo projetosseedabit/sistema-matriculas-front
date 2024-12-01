@@ -232,7 +232,7 @@ function validateFields(fields: FormField[]): boolean {
   
   {/* Barra de progresso entre a navbar e o formulário */}
   <ProgressBar currentStep={2} />  {/* Passando o estado atual para a barra de progresso */}
-  
+  <main className="mb-8">
   <h1 className="text-sky-950 text-4xl text-center font-light py-8">
     Preencha o formulário
   </h1>
@@ -303,11 +303,23 @@ function validateFields(fields: FormField[]): boolean {
       label="Avançar"
       onClick={handleSubmit}
     />
+    
 
 </div>
 
     </div>
   )}
+  {selectedOption == null && (
+    <div className="flex justify-center mt-8">
+    <Link href={"/"}>
+    <Button
+    color="bg-[#003960]"
+    label="Voltar"
+  />
+</Link>
+</div>
+  )}
+  </main>
 </>
 
   );
