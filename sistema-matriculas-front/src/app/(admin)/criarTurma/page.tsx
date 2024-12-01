@@ -9,7 +9,7 @@ const CriarTurma = () => {
            
             <Sidebar />
             
-            <div className="flex-1 p-6">
+            <div className="flex flex-1 items-center justify-center">
                 <CreateClass />
             </div>
             
