@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Logo from "../../../../public/vercel.svg";
 
 export default function Informations() {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImFkbWluIiwiaWF0IjoxNzMzMDEwNTkyLCJleHAiOjE3MzMwMTQxOTJ9.q_mUEPGdb9ipeG3RPPjIkCMdi3LMaoeMAoPISfkDwgQ";
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImFkbWluIiwiaWF0IjoxNzMzMDE0NjczLCJleHAiOjE3MzMwMTgyNzN9.qTBscRz2cHRVphwF-RgNiqjdj6gub-KX2nQqL_mqkmQ";
     
     const [data, setData] = useState<Registration[]>([]);
     const [filteredData, setFilteredData] = useState<Registration[]>([]);
@@ -14,6 +14,7 @@ export default function Informations() {
     const [isClassOpen, setIsClassOpen] = useState(false);
     const [isStatusOpen, setIsStatusOpen] = useState(false);
     const [selectedClass, setSelectedClass] = useState<string | null>(null);
+    const [classes, setClasses] = useState<Class[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
 
     const toggleClassDropdown = () => setIsClassOpen(!isClassOpen);
@@ -29,6 +30,22 @@ export default function Informations() {
         setSelectedStatus(status);
         setIsStatusOpen(false);
         filterData();
+    };
+    const fetchClasses = async () => {
+        try {
+            const response = await fetch('https://king-prawn-app-3bepj.ondigitalocean.app/class/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+    
+            const classesData = await response.json();
+            setClasses(classesData.allClass || []); // Ajuste conforme o formato da resposta da API
+        } catch (error) {
+            console.error('Erro ao buscar classes:', error);
+            alert('Erro ao buscar classes');
+        }
     };
 
     const filterData = () => {
@@ -133,6 +150,7 @@ export default function Informations() {
 
     useEffect(() => {
         fetchData('https://king-prawn-app-3bepj.ondigitalocean.app/registration/');
+        fetchClasses();
     }, []);
     
     if (loading) {
@@ -156,18 +174,17 @@ export default function Informations() {
 
                             {/* Itens do drop-down */}
                             {isClassOpen && (
+
                                 <ul>
-                                    <li
-                                        onClick={() => handleClassSelection("1")}
+                                    {classes.map((classItem) => (
+                                        <li
+                                        key={classItem.id}
+                                        onClick={() => handleClassSelection(String(classItem.id))}
                                         className="font-montserrat text-white px-4 py-2 hover:bg-sky-950 cursor-pointer">
-                                        Opção 1
+                                        {classItem.fullName}
                                     </li>
-                                    <li 
-                                    onClick={() => handleClassSelection("2")}
-                                    className="font-montserrat text-white px-4 py-2 hover:bg-sky-950 cursor-pointer">Opção 2</li>
-                                    <li
-                                    onClick={() => handleClassSelection("3")}
-                                    className="font-montserrat text-white px-4 py-2 hover:bg-sky-950 cursor-pointer">Opção 3</li>
+                                    ))}
+                                    
                                 </ul>
                             )}
                         </div>
