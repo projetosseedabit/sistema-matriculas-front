@@ -13,6 +13,10 @@ export async function middleware(request: NextRequest) {
         redirectURLString = `/login?redirectTo=${path.replace("/admin", "")}`;
     }
 
+    if (path.startsWith("/login")) {
+        return NextResponse.next();
+    }
+
     if (!token) {
         return NextResponse.redirect(new URL(redirectURLString, request.url));
     }
@@ -24,7 +28,7 @@ export async function middleware(request: NextRequest) {
         }
         await jose.jwtVerify(token, new TextEncoder().encode(secret));
 
-        if (path === "/login" || path === "/login/") {
+        if (path.startsWith("/login")) {
             return NextResponse.redirect(new URL("/admin", request.url));
         }
     } catch (error) {
