@@ -29,9 +29,7 @@ export async function middleware(request: NextRequest) {
             return NextResponse.redirect(new URL("/admin", request.url));
         } catch (error) {
             console.error(error);
-            return NextResponse.redirect(
-                new URL(redirectURLString, request.url)
-            );
+            return NextResponse.next();
         }
     }
 
