@@ -1,12 +1,11 @@
-'use client';
-import Image from "next/image";
-import React, {useEffect, useState } from "react";
+'use client'
+import React, { useEffect, useState } from "react";
+import AdminHeader from "@/components/admin-header/admin-header";
+import Image from 'next/image';
 import Logo from "../../../../public/vercel.svg";
-import { fetchWithToken } from "@/utils";
-import Sidebar from "@/components/sidebarAdmin";
 
-
-export default function AdminPage() {
+export default function Informations() {
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImFkbWluIiwiaWF0IjoxNzMzMDgxMTkxLCJleHAiOjE3MzMwODQ3OTF9.ZZ6Hi65lKEj3uIyg3HU7QC7q3SNA23exNyiG3Rps29I";
     
     const [data, setData] = useState<Registration[]>([]);
     const [filteredData, setFilteredData] = useState<Registration[]>([]);
@@ -65,9 +64,10 @@ export default function AdminPage() {
     const fetchData = async (url: string) => {
         setLoading(true);
         try {
-            const response = await fetchWithToken(url, {
+            const response = await fetch(url, {
                 method: 'GET', headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
             });
             const registrationsData = await response.json();
@@ -76,11 +76,11 @@ export default function AdminPage() {
             
 
             if (Array.isArray(registrations)) {
-                const responseStudents = await fetchWithToken('https://king-prawn-app-3bepj.ondigitalocean.app/students/', {
+                const responseStudents = await fetch('https://king-prawn-app-3bepj.ondigitalocean.app/students/', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-             
+                        'Authorization': `Bearer ${token}`
                     }
                 });
 
@@ -88,11 +88,11 @@ export default function AdminPage() {
                 const students = studentsData.allStudents;
                 console.log(students);
 
-                const responseResponsibles = await fetchWithToken('https://king-prawn-app-3bepj.ondigitalocean.app/responsible/', {
+                const responseResponsibles = await fetch('https://king-prawn-app-3bepj.ondigitalocean.app/responsible/', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                    
+                        'Authorization': `Bearer ${token}`
                     }
                 });
 
@@ -100,11 +100,11 @@ export default function AdminPage() {
                 const responsibles = responsiblesData.allResponsible;
                 console.log(responsibles);
 
-                const responseTransactions = await fetchWithToken('https://king-prawn-app-3bepj.ondigitalocean.app/transactions/', {
+                const responseTransactions = await fetch('https://king-prawn-app-3bepj.ondigitalocean.app/transactions/', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                    
+                        'Authorization': `Bearer ${token}`
                     }
                 });
 
@@ -154,16 +154,16 @@ export default function AdminPage() {
     }, []);
     
     if (loading) {
-        return <p className="px-8">Carregando...</p>
+        return <p className="px-8">Carregandoooo...</p>
     }
 
     return (
         <>
             <div className="flex ">
-                <Sidebar></Sidebar>
+                <AdminHeader></AdminHeader>
 
                 <div className="w-screen ">
-                    <div className="bg-azul px-16 py-4">
+                    <div className="bg-sky-800 px-16 py-4">
 
                         <div>
                             {/* Botão do menu */}
@@ -216,18 +216,18 @@ export default function AdminPage() {
                         </div>
                     </div>
                     <div className="justify-items-center px-16 ">
-                        <table className="table-fixed border-azul border-separate border-spacing-2 border border-slate-400 ">
+                        <table className="table-fixed border-separate border-spacing-2 border border-slate-400 ">
                             <thead>
                                 <tr >
-                                    <th className="border border-azul px-4 py-4 text-blue">Turma</th>
-                                    <th className="border border-azul px-4 py-4 text-blue">Aluno</th>
-                                    <th className="border border-azul px-4 py-4 text-blue">Status de Matricula</th>
-                                    <th className="border border-azul px-4 py-4 text-blue">Status de Pagamento</th>
-                                    <th className="border border-azul px-4 py-4 text-blue">Responsável</th>
-                                    <th className="border border-azul px-4 py-4 text-blue">Contato</th>
-                                    <th className="border border-azul px-4 py-4 text-blue">Método de Pagamento</th>
-                                    <th className="border border-azul px-4 py-4 text-blue">Valor</th>
-                                    {/* <th className="border border-slate-300 px-4 py-4">Ação</th> */}
+                                    <th className="border border-slate-300 px-4 py-4">Turma</th>
+                                    <th className="border border-slate-300 px-4 py-4">Aluno</th>
+                                    <th className="border border-slate-300 px-4 py-4">Status de Matricula</th>
+                                    <th className="border border-slate-300 px-4 py-4">Status de Pagamento</th>
+                                    <th className="border border-slate-300 px-4 py-4">Responsável</th>
+                                    <th className="border border-slate-300 px-4 py-4">Contato</th>
+                                    <th className="border border-slate-300 px-4 py-4">Método de Pagamento</th>
+                                    <th className="border border-slate-300 px-4 py-4">Valor</th>
+                                    <th className="border border-slate-300 px-4 py-4">Ação</th>
                                 </tr>
                             </thead>
                             <tbody >
@@ -236,17 +236,17 @@ export default function AdminPage() {
                                         <td>{item.id}</td>
                                         <td>{item.studentName}</td>
                                         <td>{item.status}</td>
-                                        <td className={item.paymentStatus === 'PAID'? 'text-green-600': item.paymentStatus == 'PENDING' ? 'text-orange-500' : 'text-red-500'}><strong>{item.paymentStatus}</strong></td>
+                                        <td>{item.paymentStatus}</td>
                                         <td>{item.responsibleName}</td>
                                         <td>{item.responsibleContact}</td>
                                         <td>{item.paymentMethod}</td>
                                         <td>{item.paymentValue}</td>
                                         
-                                        {/* <td>
+                                        <td>
                                             <button className="text-red-500" onClick={() => alert(`Deseja excluir aluno ${item.studentId}?`)}>
                                                 Excluir 
                                             </button>
-                                        </td> */}
+                                        </td>
                                     </tr>
                                 ))}
                                 

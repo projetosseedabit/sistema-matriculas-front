@@ -6,7 +6,7 @@ const Sidebar: React.FC = () => {
   const pathname = usePathname();
 
   const menuItems = [
-    { name: "Início", route: "/inicio" },
+    { name: "Início", route: "/admin" },
     { name: "Criar turmas", route: "/criarTurma" },
     { name: "Visualizar turmas", route: "/visualizarTurmas" },
     { name: "Gerar relatórios", route: "/gerarRelatorios" },
