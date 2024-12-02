@@ -23,39 +23,9 @@ function getScheduleInfo(lessonSchedule: string): {
     startTime: string;
     endTime: string;
 } {
-    console.log(lessonSchedule);
-    // Grupo 1: Dia
-    // Grupo 2 (opcional): "às"
-    // Grupo 3: Hora de início
-    // Grupo 4 (opcional): Hora de término
-    const regex = new RegExp(
-        /([a-zA-Z\-çá]+)\s*(às)*\s*(\d{2}h)\s*\-?\s*(\d{2}h)*/
-    );
-
-    // const dayOfWeek = lessonSchedule.split("|")[0];
-    // const startTime = lessonSchedule.split("|")[1].split("-")[0];
-    // const endTime = lessonSchedule.split("|")[1].split("-")[1];
-
-    const match = lessonSchedule.match(regex);
-
-    if (!match) {
-        throw new Error("Invalid lesson schedule format");
-    }
-
-    const dayOfWeek = match[1];
-    const startTime = match[3].replace("h", ":00");
-
-    let endTime = "";
-
-    if (!match[4]) {
-        // calculate +2h from startTime
-        const startTimeHours = parseInt(startTime.split("h")[0]);
-        const endTimeHours = startTimeHours + 2;
-
-        endTime = `${endTimeHours}:00`;
-    } else {
-        endTime = match[4].replace("h", ":00");
-    }
+    const dayOfWeek = lessonSchedule.split("|")[0];
+    const startTime = lessonSchedule.split("|")[1].split("-")[0];
+    const endTime = lessonSchedule.split("|")[1].split("-")[1];
 
     return {
         dayOfWeek,
@@ -64,26 +34,26 @@ function getScheduleInfo(lessonSchedule: string): {
     };
 }
 
-// function formatDayOfWeek(dayOfWeek: string): string {
-//     switch (dayOfWeek) {
-//         case "SEG":
-//             return "Segunda";
-//         case "TER":
-//             return "Terça";
-//         case "QUA":
-//             return "Quarta";
-//         case "QUI":
-//             return "Quinta";
-//         case "SEX":
-//             return "Sexta";
-//         case "SAB":
-//             return "Sábado";
-//         case "DOM":
-//             return "Domingo";
-//         default:
-//             return "";
-//     }
-// }
+function formatDayOfWeek(dayOfWeek: string): string {
+    switch (dayOfWeek) {
+        case "SEG":
+            return "Segunda";
+        case "TER":
+            return "Terça";
+        case "QUA":
+            return "Quarta";
+        case "QUI":
+            return "Quinta";
+        case "SEX":
+            return "Sexta";
+        case "SAB":
+            return "Sábado";
+        case "DOM":
+            return "Domingo";
+        default:
+            return "";
+    }
+}
 
 export default function Classes() {
     const [classes, setClasses] = useState<Class[]>([]);
@@ -248,7 +218,7 @@ export default function Classes() {
                               return (
                                   <AdminClassCard
                                       key={c.id}
-                                      dayOfWeek={dayOfWeek}
+                                      dayOfWeek={formatDayOfWeek(dayOfWeek)}
                                       mode={
                                           c.mode === "IN_PERSON"
                                               ? "Presencial"
