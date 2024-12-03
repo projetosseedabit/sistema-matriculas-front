@@ -1,147 +1,201 @@
-import React, { useState } from 'react';
+import { fetchWithToken } from "@/utils";
+import React, { FormEvent, useState } from "react";
 
-const CreateClass:React.FC = () => {
-  const [formData, setFormData] = useState({
-    dia: '',
-    modalidade: '',
-    horarioInicio: '',
-    horarioFim: '',
-    valorMatricula: '',
-    valorMensalidade: '',
-    quantidadeAlunos: ''
-  });
+const CreateClass: React.FC = () => {
+    async function createClass(event: FormEvent) {
+        event.preventDefault();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
+        const response = await fetchWithToken(
+            "https://king-prawn-app-3bepj.ondigitalocean.app/class",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    fullName: name,
+                    lessonSchedule: `${dayOfTheWeek}|${startTime}-${endTime}`,
+                    mode: mode,
+                    maxSeats: maxSeats,
+                    availableSeats: maxSeats,
+                    paymentAmount: enrollmentValue,
+                }),
+            }
+        );
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(formData);
-  };
+        if (response.ok) {
+            alert("Turma criada com sucesso!");
+            setName("")
+            setDayOfTheWeek("")
+            setMode("")
+            setStartTime("")
+            setEndTime("")
+            setEnrollmentValue(0)
+            setMaxSeats(0)
+        } else {
+            alert("Erro ao criar turma!");
+        }
+    }
 
-  return (
-    <div className="flex">
+    const [name, setName] = useState("");
+    const [dayOfTheWeek, setDayOfTheWeek] = useState("");
+    const [mode, setMode] = useState("");
+    const [startTime, setStartTime] = useState("");
+    const [endTime, setEndTime] = useState("");
+    const [enrollmentValue, setEnrollmentValue] = useState(0);
+    const [maxSeats, setMaxSeats] = useState<number | null>(0);
 
-      {/*Formulário*/}
-      <div className="w-full max-w-4xl p-8 bg-white border-2 border-azul rounded-xl shadow-lg">
-        <h1 className="text-2xl font-bold mb-4">Criar turma</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          
-          <div className="flex justify-between w-[35rem] items-center">
-            <label htmlFor="dia" className="block text-sm font-medium">Selecione o dia da turma</label>
-            <select
-              id="dia"
-              name="dia"
-              value={formData.dia}
-              onChange={handleChange}
-              className="mt-1 p-2 border-2 border-azul rounded w-[180px] h-[40px]"
-            >
-              <option value="" disabled>Dia da turma</option>
-              <option value="segunda">Segunda-feira</option>
-              <option value="terca">Terça-feira</option>
-              <option value="quarta">Quarta-feira</option>
-              <option value="quinta">Quinta-feira</option>
-              <option value="sexta">Sexta-feira</option>
-            </select>
-          </div>
-
-          <div className="flex justify-between items-center">
-            <label htmlFor="modalidade" className="block text-sm font-medium">Selecione a modalidade</label>
-            <select
-              id="modalidade"
-              name="modalidade"
-              value={formData.modalidade}
-              onChange={handleChange}
-              className="mt-1 p-2 border-2 border-azul rounded w-full w-[180px] h-[40px]"
-            >
-              <option value="" disabled>Modalidade da turma</option>
-              <option value="presencial">Presencial</option>
-              <option value="online">Online</option>
-            </select>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="horarioInicio" className="block text-sm font-medium">Horário de início</label>
-              <input
-                type="time"
-                id="horarioInicio"
-                name="horarioInicio"
-                value={formData.horarioInicio}
-                onChange={handleChange}
-                className="mt-1 p-2 border-2 border-azul rounded w-full"
-              />
+    return (
+        <div className="flex justify-center items-center h-screen">
+            <div className="px-8 py-6 rounded-lg border-2 border-azul">
+                <div className="w-[26rem] text-azul">
+                    <h1 className="text-left text-black font-bold text-xl">
+                        Criar turma
+                    </h1>
+                    <form
+                        className="space-y-4 text-sm mt-8"
+                        onSubmit={createClass}
+                    >
+                        <div className="w-full flex justify-between items-center">
+                            <label htmlFor="name" className="font-semibold">
+                                Nome da turma
+                            </label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                className="w-52 text-azul placeholder:text-zinc-500 px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
+                                placeholder="Nome"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                            />
+                        </div>
+                        <div className="w-full flex justify-between items-center text-azul">
+                            <label htmlFor="dia" className="font-semibold">
+                                Selecione o dia da turma
+                            </label>
+                            <select
+                                name="dia"
+                                id="dia"
+                                className="w-52 text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
+                                value={dayOfTheWeek}
+                                onChange={(e) =>
+                                    setDayOfTheWeek(e.target.value)
+                                }
+                            >
+                                <option value="" disabled>
+                                    Dia da turma
+                                </option>
+                                <option value="SEG">Segunda-feira</option>
+                                <option value="TER">Terça-feira</option>
+                                <option value="QUA">Quarta-feira</option>
+                                <option value="QUI">Quinta-feira</option>
+                                <option value="SEX">Sexta-feira</option>
+                            </select>
+                        </div>
+                        <div className="w-full flex justify-between items-center text-azul">
+                            <label
+                                htmlFor="modalidade"
+                                className="font-semibold"
+                            >
+                                Selecione a modalidade
+                            </label>
+                            <select
+                                name="modalidade"
+                                id="modalidade"
+                                className="w-52 text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
+                                value={mode}
+                                onChange={(e) => setMode(e.target.value)}
+                            >
+                                <option value="" disabled>
+                                    Modalidade da turma
+                                </option>
+                                <option value="ONLINE">Online</option>
+                                <option value="IN_PERSON">Presencial</option>
+                            </select>
+                        </div>
+                        <div className="w-full flex justify-between items-center text-azul">
+                            <label
+                                htmlFor="startTime"
+                                className="font-semibold"
+                            >
+                                Horário a modalidade
+                            </label>
+                            <div className="flex gap-2 items-center">
+                                <input
+                                    type="time"
+                                    name="startTime"
+                                    id="startTime"
+                                    className="w-[5.5rem] text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
+                                    value={startTime}
+                                    onChange={(e) =>
+                                        setStartTime(e.target.value)
+                                    }
+                                />
+                                às
+                                <input
+                                    type="time"
+                                    name="endTime"
+                                    id="endTime"
+                                    className="w-[5.5rem] text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
+                                    value={endTime}
+                                    onChange={(e) => setEndTime(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                        <div className="w-full flex justify-between items-center text-azul">
+                            <label htmlFor="valor" className="font-semibold">
+                                Valor da matrícula
+                            </label>
+                            <input
+                                type="number"
+                                name="valor"
+                                id="valor"
+                                placeholder="R$ 000,00"
+                                className="w-24 text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
+                                value={
+                                    enrollmentValue === 0 ? "" : enrollmentValue
+                                }
+                                onChange={(e) =>
+                                    setEnrollmentValue(Number(e.target.value))
+                                }
+                            />
+                        </div>
+                        <div className="w-full flex justify-between items-center text-azul">
+                            <label
+                                htmlFor="quantidadeAlunos"
+                                className="font-semibold"
+                            >
+                                Quantidade máxima de alunos{" "}
+                            </label>
+                            <input
+                                type="number"
+                                name="quantidadeAlunos"
+                                id="quantidadeAlunos"
+                                placeholder="000"
+                                className="w-24 text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul disabled:border-zinc-500 disabled:bg-zinc-300 disabled:cursor-not-allowed"
+                                value={
+                                    maxSeats !== null && maxSeats !== 0
+                                        ? maxSeats
+                                        : ""
+                                }
+                                onChange={(e) =>
+                                    setMaxSeats(Number(e.target.value))
+                                }
+                                disabled={mode === "ONLINE"}
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            className="mt-8 mx-auto block text-white bg-laranja px-4 py-2 rounded hover:bg-[#E38714] transition-colors"
+                        >
+                            Criar turma
+                        </button>
+                    </form>
+                </div>
             </div>
-
-            <div>
-              <label htmlFor="horarioFim" className="block text-sm font-medium">Horário de término</label>
-              <input
-                type="time"
-                id="horarioFim"
-                name="horarioFim"
-                value={formData.horarioFim}
-                onChange={handleChange}
-                className="mt-1 p-2 border-2 border-azul rounded w-full"
-              />
-            </div>
-          </div>
-
-          <div className=" grid grid-cols-1 gap-4 items-center">
-            <div className="flex justify-between items-center space-x-4">
-              <label htmlFor="valorMatricula" className="block text-sm font-medium w-1/4">Valor da matrícula</label>
-              <input
-                type="number"
-                id="valorMatricula"
-                name="valorMatricula"
-                value={formData.valorMatricula}
-                onChange={handleChange}
-                className="mt-1 p-2 border-2 border-azul rounded w-full w-[180px] h-[40px]"
-                placeholder="R$ 000,00"
-              />
-            </div>
-
-            <div className="flex justify-between items-center space-x-4 items-center">
-              <label htmlFor="valorMensalidade" className="block text-sm font-medium w-1/4">Valor da mensalidade</label>
-              <input
-                type="number"
-                id="valorMensalidade"
-                name="valorMensalidade"
-                value={formData.valorMensalidade}
-                onChange={handleChange}
-                className="mt-1 p-2 border-2 border-azul rounded w-full w-[180px] h-[40px]"
-                placeholder="R$ 000,00"
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center">
-            <label htmlFor="quantidadeAlunos" className="block text-sm font-medium">Quantidade de alunos</label>
-            <input
-              type="number"
-              id="quantidadeAlunos"
-              name="quantidadeAlunos"
-              value={formData.quantidadeAlunos}
-              onChange={handleChange}
-              className="mt-1 p-2 border-2 border-azul rounded w-full w-[180px] h-[40px]"
-              placeholder="Digite"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="bg-laranja text-white py-2 px-4 rounded w-full"
-          >
-            Criar turma
-          </button>
-        </form>
-      </div>
-    </div>
-  );
+        </div>
+    );
 };
 
 export default CreateClass;
