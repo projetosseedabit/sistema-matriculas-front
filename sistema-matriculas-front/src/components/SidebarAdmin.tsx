@@ -15,9 +15,22 @@ const Sidebar: React.FC = () => {
     const handleFetch = async () => {
       try {
           const response = await fetch("https://king-prawn-app-3bepj.ondigitalocean.app/report");
+          
           if (!response.ok) {
               throw new Error(`Erro na requisição: ${response.status}`);
           }
+
+          const blob = await response.blob()
+
+          const url = window.URL.createObjectURL(blob)
+          const a = document.createElement('a')
+
+          a.href=url
+          a.download = 'Relatório.csv'
+          document.body.appendChild(a)
+          a.click()
+          a.remove()
+          window.URL.revokeObjectURL(url)
       } catch (error) {
           console.error("Erro ao fazer fetch:", error);
       }
