@@ -72,7 +72,7 @@ export default function RootLayout() {
                 checked={selectedOption === classData.id}
                 onChange={handleSelection}
                 dayOfWeek={getDayName(classData.lessonSchedule)}
-                mode={classData.mode === ModeEnum.IN_PERSON ? "Presencial" : "On-line"}
+                mode={classData.mode === "IN_PERSON" ? "Presencial" : "On-line"}
                 totalVacancies={classData.maxSeats}
                 vacanciesFilled={classData.availableSeats}
                 time={getTime(classData.lessonSchedule)}
@@ -82,7 +82,7 @@ export default function RootLayout() {
           ))}
         </div>
         <div className="flex justify-center mt-8">
-        <Link href={selectedOption !== null ? `/forms?classId=${selectedOption}` : "#"}>
+        <Link href={selectedOption !== null ? `/forms?classId=${selectedOption}&mode=${classes.filter((Class) => Class.id === selectedOption)[0].mode}` : "#"}>
           <Button
             color="bg-[#FFA12B]"
             label="Avançar"
