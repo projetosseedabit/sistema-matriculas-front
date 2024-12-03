@@ -10,11 +10,34 @@ const Sidebar: React.FC = () => {
         { name: "Início", route: "/admin" },
         { name: "Criar turma", route: "/admin/criar-turma" },
         { name: "Visualizar turmas", route: "/admin/turmas" },
-        { name: "Gerar relatórios", route: "/admin/" },
     ];
 
+    const handleFetch = async () => {
+      try {
+          const response = await fetch("https://king-prawn-app-3bepj.ondigitalocean.app/report");
+          
+          if (!response.ok) {
+              throw new Error(`Erro na requisição: ${response.status}`);
+          }
+
+          const blob = await response.blob()
+
+          const url = window.URL.createObjectURL(blob)
+          const a = document.createElement('a')
+
+          a.href=url
+          a.download = 'Relatório.csv'
+          document.body.appendChild(a)
+          a.click()
+          a.remove()
+          window.URL.revokeObjectURL(url)
+      } catch (error) {
+          console.error("Erro ao fazer fetch:", error);
+      }
+  };
+
     return (
-        <aside className="flex-shrink-0 sticky top-0 left-0 bg-blue-900 text-white py-16 px-10 flex flex-col justify-between h-screen">
+        <aside className="flex-shrink-0 sticky top-0 left-0 bg-azul text-white py-16 px-10 flex flex-col justify-between h-screen">
             <div className="w-64">
                 <div className="flex flex-col items-center mb-8">
                     <Image
@@ -47,7 +70,15 @@ const Sidebar: React.FC = () => {
                                     {item.name}
                                 </button>
                             </li>
-                        ))}
+                        ))} 
+                            <li key={"btnReport"}>
+                                <button
+                                    onClick={handleFetch}
+                                    className={`w-full text-center border-2 rounded px-4 py-2 font-medium bg-transparent text-white border-laranja hover:bg-laranja hover:text-azul`}
+                                >
+                                    Gerar relatório
+                                  </button>
+                            </li> 
                     </ul>
                 </nav>
             </div>
