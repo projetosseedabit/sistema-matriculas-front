@@ -81,13 +81,16 @@ export default function EditClassPage() {
             if (response.ok) {
                 setDialogMessage("Turma editada com sucesso!");
                 setOpenDialog(true);
+                setDialogType("success");
             } else {
                 setDialogMessage("Erro ao editar turma.");
                 setOpenDialog(true);
+                setDialogType("error");
             }
         } catch (err) {
             setOpenDialog(true);
             setDialogMessage("Erro ao editar turma.");
+            setDialogType("error");
         }
     }
 
@@ -151,6 +154,9 @@ export default function EditClassPage() {
     const [dialogMessage, setDialogMessage] = useState("");
     const [openDialog, setOpenDialog] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [dialogType, setDialogType] = useState<"success" | "error">(
+        "success"
+    );
 
     return (
         <>
@@ -159,18 +165,52 @@ export default function EditClassPage() {
                 className="data-[open=false]:hidden fixed w-screen h-screen top-0 left-0 bg-black/80 flex justify-center items-center"
             >
                 <div className="bg-white flex flex-col items-center gap-4 px-8 py-4 rounded-lg">
-                    {/* <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="64"
-                        height="65"
-                        fill="none"
-                        viewBox="0 0 64 65"
-                    >
-                        <path
-                            fill="#FFD84F"
-                            d="M32 19.417a2.667 2.667 0 0 0-2.667 2.666V32.75a2.667 2.667 0 1 0 5.334 0V22.084A2.667 2.667 0 0 0 32 19.417m2.453 22.987a2 2 0 0 0-.24-.48l-.32-.4a2.67 2.67 0 0 0-2.906-.56c-.324.135-.621.324-.88.56a2.67 2.67 0 0 0-.774 1.893c.005.348.077.693.214 1.013a2.4 2.4 0 0 0 1.44 1.44 2.5 2.5 0 0 0 2.026 0 2.4 2.4 0 0 0 1.44-1.44c.137-.32.21-.665.214-1.013a4 4 0 0 0 0-.534 1.7 1.7 0 0 0-.214-.48M32 6.084a26.667 26.667 0 1 0 0 53.334 26.667 26.667 0 0 0 0-53.334m0 48a21.333 21.333 0 1 1 0-42.667 21.333 21.333 0 0 1 0 42.667"
-                        ></path>
-                    </svg> */}
+                    {dialogType === "success" ? (
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="64"
+                            height="65"
+                            fill="none"
+                            viewBox="0 0 64 65"
+                        >
+                            <g clipPath="url(#clip0_2503_272)">
+                                <circle
+                                    cx="32"
+                                    cy="32.75"
+                                    r="32"
+                                    fill="#4BB002"
+                                ></circle>
+                                <path
+                                    stroke="#FAFAFA"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="5.6"
+                                    d="M51.6 21.95 25.467 48.082 12.4 35.017"
+                                ></path>
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_2503_272">
+                                    <path
+                                        fill="#fff"
+                                        d="M0 .75h64v64H0z"
+                                    ></path>
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    ) : (
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="64"
+                            height="65"
+                            fill="none"
+                            viewBox="0 0 64 65"
+                        >
+                            <path
+                                fill="#FFD84F"
+                                d="M32 19.417a2.667 2.667 0 0 0-2.667 2.666V32.75a2.667 2.667 0 1 0 5.334 0V22.084A2.667 2.667 0 0 0 32 19.417m2.453 22.987a2 2 0 0 0-.24-.48l-.32-.4a2.67 2.67 0 0 0-2.906-.56c-.324.135-.621.324-.88.56a2.67 2.67 0 0 0-.774 1.893c.005.348.077.693.214 1.013a2.4 2.4 0 0 0 1.44 1.44 2.5 2.5 0 0 0 2.026 0 2.4 2.4 0 0 0 1.44-1.44c.137-.32.21-.665.214-1.013a4 4 0 0 0 0-.534 1.7 1.7 0 0 0-.214-.48M32 6.084a26.667 26.667 0 1 0 0 53.334 26.667 26.667 0 0 0 0-53.334m0 48a21.333 21.333 0 1 1 0-42.667 21.333 21.333 0 0 1 0 42.667"
+                            ></path>
+                        </svg>
+                    )}
                     <p className="w-[18.75rem] text-center text-lg font-medium">
                         {dialogMessage}{" "}
                     </p>
@@ -181,7 +221,7 @@ export default function EditClassPage() {
                             setDialogMessage("");
                             router.push("/admin/turmas");
                         }}
-                        className="px-5 py-1 rounded bg-transparent text-vermelho border border-vermelho"
+                        className="px-5 py-1 rounded bg-laranja text-branco"
                     >
                         OK
                     </button>
@@ -344,7 +384,8 @@ export default function EditClassPage() {
                             </div>
                             <button
                                 type="submit"
-                                className="mt-8 mx-auto block text-white bg-laranja px-4 py-2 rounded hover:bg-[#E38714] transition-colors"
+                                className="mt-8 mx-auto flex justify-center items-center text-white bg-laranja px-4 py-2 rounded hover:bg-[#E38714] transition-colors disabled:cursor-not-allowed disabled:bg-zinc-500 disabled:text-zinc-300"
+                                disabled={isLoading}
                             >
                                 {isLoading ? (
                                     <svg

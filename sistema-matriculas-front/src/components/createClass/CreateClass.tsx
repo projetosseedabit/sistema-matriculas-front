@@ -1,147 +1,316 @@
-import React, { useState } from 'react';
+import { fetchWithToken } from "@/utils";
+import { useRouter } from "next/navigation";
+import React, { FormEvent, useState } from "react";
 
-const CreateClass:React.FC = () => {
-  const [formData, setFormData] = useState({
-    dia: '',
-    modalidade: '',
-    horarioInicio: '',
-    horarioFim: '',
-    valorMatricula: '',
-    valorMensalidade: '',
-    quantidadeAlunos: ''
-  });
+const CreateClass: React.FC = () => {
+    async function createClass(event: FormEvent) {
+        event.preventDefault();
+        setIsLoading(true);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
+        const response = await fetchWithToken(
+            "https://king-prawn-app-3bepj.ondigitalocean.app/class",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    fullName: name,
+                    lessonSchedule: `${dayOfTheWeek}|${startTime}-${endTime}`,
+                    mode: mode,
+                    maxSeats: maxSeats,
+                    availableSeats: maxSeats,
+                    paymentAmount: enrollmentValue,
+                }),
+            }
+        );
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(formData);
-  };
+        if (response.ok) {
+            setDialogType("success");
+            setDialogMessage("Turma criada com sucesso!");
+            setOpenDialog(true);
+            setIsLoading(false);
+        } else {
+            setDialogType("error");
+            setDialogMessage("Erro ao criar turma.");
+            setOpenDialog(true);
+            setIsLoading(false);
+        }
+    }
 
-  return (
-    <div className="flex">
+    const [name, setName] = useState("");
+    const [dayOfTheWeek, setDayOfTheWeek] = useState("");
+    const [mode, setMode] = useState("");
+    const [startTime, setStartTime] = useState("");
+    const [endTime, setEndTime] = useState("");
+    const [enrollmentValue, setEnrollmentValue] = useState(0);
+    const [maxSeats, setMaxSeats] = useState<number | null>(0);
 
-      {/*Formulário*/}
-      <div className="w-full max-w-4xl p-8 bg-white border-2 border-azul rounded-xl shadow-lg">
-        <h1 className="text-2xl font-bold mb-4">Criar turma</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          
-          <div className="flex justify-between w-[35rem] items-center">
-            <label htmlFor="dia" className="block text-sm font-medium">Selecione o dia da turma</label>
-            <select
-              id="dia"
-              name="dia"
-              value={formData.dia}
-              onChange={handleChange}
-              className="mt-1 p-2 border-2 border-azul rounded w-[180px] h-[40px]"
+    const [isLoading, setIsLoading] = useState(false);
+    const [dialogType, setDialogType] = useState<"success" | "error">(
+        "success"
+    );
+    const [dialogMessage, setDialogMessage] = useState("");
+    const [openDialog, setOpenDialog] = useState(false);
+
+    const router = useRouter();
+
+    return (
+        <>
+            <div
+                data-open={openDialog}
+                className="data-[open=false]:hidden fixed w-screen h-screen top-0 left-0 bg-black/80 flex justify-center items-center"
             >
-              <option value="" disabled>Dia da turma</option>
-              <option value="segunda">Segunda-feira</option>
-              <option value="terca">Terça-feira</option>
-              <option value="quarta">Quarta-feira</option>
-              <option value="quinta">Quinta-feira</option>
-              <option value="sexta">Sexta-feira</option>
-            </select>
-          </div>
+                <div className="bg-white flex flex-col items-center gap-4 px-8 py-4 rounded-lg">
+                    {dialogType === "success" ? (
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="64"
+                            height="65"
+                            fill="none"
+                            viewBox="0 0 64 65"
+                        >
+                            <g clipPath="url(#clip0_2503_272)">
+                                <circle
+                                    cx="32"
+                                    cy="32.75"
+                                    r="32"
+                                    fill="#4BB002"
+                                ></circle>
+                                <path
+                                    stroke="#FAFAFA"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="5.6"
+                                    d="M51.6 21.95 25.467 48.082 12.4 35.017"
+                                ></path>
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_2503_272">
+                                    <path
+                                        fill="#fff"
+                                        d="M0 .75h64v64H0z"
+                                    ></path>
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    ) : (
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="64"
+                            height="65"
+                            fill="none"
+                            viewBox="0 0 64 65"
+                        >
+                            <path
+                                fill="#FFD84F"
+                                d="M32 19.417a2.667 2.667 0 0 0-2.667 2.666V32.75a2.667 2.667 0 1 0 5.334 0V22.084A2.667 2.667 0 0 0 32 19.417m2.453 22.987a2 2 0 0 0-.24-.48l-.32-.4a2.67 2.67 0 0 0-2.906-.56c-.324.135-.621.324-.88.56a2.67 2.67 0 0 0-.774 1.893c.005.348.077.693.214 1.013a2.4 2.4 0 0 0 1.44 1.44 2.5 2.5 0 0 0 2.026 0 2.4 2.4 0 0 0 1.44-1.44c.137-.32.21-.665.214-1.013a4 4 0 0 0 0-.534 1.7 1.7 0 0 0-.214-.48M32 6.084a26.667 26.667 0 1 0 0 53.334 26.667 26.667 0 0 0 0-53.334m0 48a21.333 21.333 0 1 1 0-42.667 21.333 21.333 0 0 1 0 42.667"
+                            ></path>
+                        </svg>
+                    )}
+                    <p className="w-[18.75rem] text-center text-lg font-medium">
+                        {dialogMessage}{" "}
+                    </p>
 
-          <div className="flex justify-between items-center">
-            <label htmlFor="modalidade" className="block text-sm font-medium">Selecione a modalidade</label>
-            <select
-              id="modalidade"
-              name="modalidade"
-              value={formData.modalidade}
-              onChange={handleChange}
-              className="mt-1 p-2 border-2 border-azul rounded w-full w-[180px] h-[40px]"
-            >
-              <option value="" disabled>Modalidade da turma</option>
-              <option value="presencial">Presencial</option>
-              <option value="online">Online</option>
-            </select>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="horarioInicio" className="block text-sm font-medium">Horário de início</label>
-              <input
-                type="time"
-                id="horarioInicio"
-                name="horarioInicio"
-                value={formData.horarioInicio}
-                onChange={handleChange}
-                className="mt-1 p-2 border-2 border-azul rounded w-full"
-              />
+                    <button
+                        onClick={() => {
+                            setOpenDialog(false);
+                            setDialogMessage("");
+                            router.push("/admin/turmas");
+                        }}
+                        className="px-5 py-1 rounded bg-laranja text-branco"
+                    >
+                        OK
+                    </button>
+                </div>
             </div>
+            <div className="flex justify-center items-center h-screen">
+                <div className="px-8 py-6 rounded-lg border-2 border-azul">
+                    <div className="w-[26rem] text-azul">
+                        <h1 className="text-left text-black font-bold text-xl">
+                            Criar turma
+                        </h1>
+                        <form
+                            className="space-y-4 text-sm mt-8"
+                            onSubmit={createClass}
+                        >
+                            <div className="w-full flex justify-between items-center">
+                                <label htmlFor="name" className="font-semibold">
+                                    Nome da turma
+                                </label>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    className="w-52 text-azul placeholder:text-zinc-500 px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
+                                    placeholder="Nome"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                />
+                            </div>
+                            <div className="w-full flex justify-between items-center text-azul">
+                                <label htmlFor="dia" className="font-semibold">
+                                    Selecione o dia da turma
+                                </label>
+                                <select
+                                    name="dia"
+                                    id="dia"
+                                    className="w-52 text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
+                                    value={dayOfTheWeek}
+                                    onChange={(e) =>
+                                        setDayOfTheWeek(e.target.value)
+                                    }
+                                >
+                                    <option value="" disabled>
+                                        Dia da turma
+                                    </option>
+                                    <option value="SEG">Segunda-feira</option>
+                                    <option value="TER">Terça-feira</option>
+                                    <option value="QUA">Quarta-feira</option>
+                                    <option value="QUI">Quinta-feira</option>
+                                    <option value="SEX">Sexta-feira</option>
+                                </select>
+                            </div>
 
-            <div>
-              <label htmlFor="horarioFim" className="block text-sm font-medium">Horário de término</label>
-              <input
-                type="time"
-                id="horarioFim"
-                name="horarioFim"
-                value={formData.horarioFim}
-                onChange={handleChange}
-                className="mt-1 p-2 border-2 border-azul rounded w-full"
-              />
+                            <div className="w-full flex justify-between items-center text-azul">
+                                <label
+                                    htmlFor="modalidade"
+                                    className="font-semibold"
+                                >
+                                    Selecione a modalidade
+                                </label>
+                                <select
+                                    name="modalidade"
+                                    id="modalidade"
+                                    className="w-52 text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
+                                    value={mode}
+                                    onChange={(e) => setMode(e.target.value)}
+                                >
+                                    <option value="" disabled>
+                                        Modalidade da turma
+                                    </option>
+                                    <option value="ONLINE">Online</option>
+                                    <option value="IN_PERSON">
+                                        Presencial
+                                    </option>
+                                </select>
+                            </div>
+                            <div className="w-full flex justify-between items-center text-azul">
+                                <label
+                                    htmlFor="startTime"
+                                    className="font-semibold"
+                                >
+                                    Horário a modalidade
+                                </label>
+                                <div className="flex gap-2 items-center">
+                                    <input
+                                        type="time"
+                                        name="startTime"
+                                        id="startTime"
+                                        className="w-[5.5rem] text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
+                                        value={startTime}
+                                        onChange={(e) =>
+                                            setStartTime(e.target.value)
+                                        }
+                                    />
+                                    às
+                                    <input
+                                        type="time"
+                                        name="endTime"
+                                        id="endTime"
+                                        className="w-[5.5rem] text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
+                                        value={endTime}
+                                        onChange={(e) =>
+                                            setEndTime(e.target.value)
+                                        }
+                                    />
+                                </div>
+                            </div>
+                            <div className="w-full flex justify-between items-center text-azul">
+                                <label
+                                    htmlFor="valor"
+                                    className="font-semibold"
+                                >
+                                    Valor da matrícula
+                                </label>
+                                <input
+                                    type="number"
+                                    name="valor"
+                                    id="valor"
+                                    placeholder="R$ 000,00"
+                                    className="w-24 text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
+                                    value={
+                                        enrollmentValue === 0
+                                            ? ""
+                                            : enrollmentValue
+                                    }
+                                    onChange={(e) =>
+                                        setEnrollmentValue(
+                                            Number(e.target.value)
+                                        )
+                                    }
+                                />
+                            </div>
+                            <div className="w-full flex justify-between items-center text-azul">
+                                <label
+                                    htmlFor="quantidadeAlunos"
+                                    className="font-semibold"
+                                >
+                                    Quantidade máxima de alunos{" "}
+                                </label>
+                                <input
+                                    type="number"
+                                    name="quantidadeAlunos"
+                                    id="quantidadeAlunos"
+                                    placeholder="000"
+                                    className="w-24 text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul disabled:border-zinc-500 disabled:bg-zinc-300 disabled:cursor-not-allowed"
+                                    value={
+                                        maxSeats !== null && maxSeats !== 0
+                                            ? maxSeats
+                                            : ""
+                                    }
+                                    onChange={(e) =>
+                                        setMaxSeats(Number(e.target.value))
+                                    }
+                                    disabled={mode === "ONLINE"}
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                className="mt-8 mx-auto flex justify-center items-center text-white bg-laranja px-4 py-2 rounded hover:bg-[#E38714] transition-colors disabled:cursor-not-allowed disabled:bg-zinc-500 disabled:text-zinc-300"
+                                disabled={isLoading}
+                            >
+                                {isLoading ? (
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <circle
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            strokeWidth="4"
+                                            className="opacity-25"
+                                        ></circle>
+                                        <path
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12zm2 5.291A7.96 7.96 0 0 1 4 12H0c0 3.042 1.135 5.824 3 7.938z"
+                                            className="opacity-75"
+                                        ></path>
+                                    </svg>
+                                ) : (
+                                    "Criar turma"
+                                )}
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
-          </div>
-
-          <div className=" grid grid-cols-1 gap-4 items-center">
-            <div className="flex justify-between items-center space-x-4">
-              <label htmlFor="valorMatricula" className="block text-sm font-medium w-1/4">Valor da matrícula</label>
-              <input
-                type="number"
-                id="valorMatricula"
-                name="valorMatricula"
-                value={formData.valorMatricula}
-                onChange={handleChange}
-                className="mt-1 p-2 border-2 border-azul rounded w-full w-[180px] h-[40px]"
-                placeholder="R$ 000,00"
-              />
-            </div>
-
-            <div className="flex justify-between items-center space-x-4 items-center">
-              <label htmlFor="valorMensalidade" className="block text-sm font-medium w-1/4">Valor da mensalidade</label>
-              <input
-                type="number"
-                id="valorMensalidade"
-                name="valorMensalidade"
-                value={formData.valorMensalidade}
-                onChange={handleChange}
-                className="mt-1 p-2 border-2 border-azul rounded w-full w-[180px] h-[40px]"
-                placeholder="R$ 000,00"
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center">
-            <label htmlFor="quantidadeAlunos" className="block text-sm font-medium">Quantidade de alunos</label>
-            <input
-              type="number"
-              id="quantidadeAlunos"
-              name="quantidadeAlunos"
-              value={formData.quantidadeAlunos}
-              onChange={handleChange}
-              className="mt-1 p-2 border-2 border-azul rounded w-full w-[180px] h-[40px]"
-              placeholder="Digite"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="bg-laranja text-white py-2 px-4 rounded w-full"
-          >
-            Criar turma
-          </button>
-        </form>
-      </div>
-    </div>
-  );
+        </>
+    );
 };
 
 export default CreateClass;
