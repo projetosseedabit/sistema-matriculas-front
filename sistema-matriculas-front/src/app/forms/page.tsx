@@ -6,7 +6,7 @@ import Form from "@/components/form-student/Formstudent";
 import { Button } from "@/components//Button";
 import { ProgressBar } from "@/components/progress-bar/progress-bar"; // Importe o componente da barra de progresso
 import Link from "next/link";
-
+import PaymentButton from "@/components/PaymentButton.tsx/PaymentButton"
 
 interface FormField {
   label: string;
@@ -178,19 +178,21 @@ export default function Forms() {
       <ContractBox />
       <ConfirmationBox onConfirm={(isChecked) => console.log("Confirmação:", isChecked)} />
       <div className="flex flex-col sm:flex-row sm:justify-between mx-4 sm:mx-8 lg:mx-60 mt-8 space-y-4 sm:space-y-0 sm:space-x-4">
-  <Link href="/">
-    <Button
-      color="bg-[#003960]"
-      label="Voltar"
-    />
-  </Link>
-  <Link href="/purchaseConfirmationPage">
-    <Button
-      color="bg-[#FFA12B]"
-      label="Avançar"
-    />
-  </Link>
-</div>
+            <Link href="/">
+              <Button color="bg-[#003960]" label="Voltar" />
+            </Link>
+            <PaymentButton
+              courseType={selectedOption === "underage" ? "IN_PERSON" : "ONLINE"}
+              student={{ fullName: "Nome Exemplo", email: "exemplo@email.com" }}
+              classObj={{
+                id: "12345",
+                fullName: "Curso Exemplo",
+                paymentAmount: 150,
+              }}
+            />
+          </div>
+
+
 
     </div>
   )}

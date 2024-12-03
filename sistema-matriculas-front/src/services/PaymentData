@@ -1,0 +1,21 @@
+// services/paymentService.ts ou outro arquivo relevante
+
+export interface PaymentData {
+    items: {
+        id: string; // ID do produto/serviço
+        title: string; // Nome do curso
+        quantity: number; // Quantidade (normalmente 1)
+        currency_id: string; // Moeda (ex.: 'BRL')
+        unit_price: number; // Preço unitário
+    }[];
+    payer: {
+        name: string; // Nome do pagador
+        email: string; // Email do pagador
+    };
+    back_urls: {
+        success: string; // URL de sucesso
+        failure: string; // URL de falha
+        pending: string; // URL de pendência
+    };S
+    auto_return: string; // Define o comportamento de retorno automático ('approved')
+}
