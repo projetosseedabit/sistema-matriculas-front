@@ -37,7 +37,7 @@ const Sidebar: React.FC = () => {
   };
 
     return (
-        <aside className="flex-shrink-0 sticky top-0 left-0 bg-blue-900 text-white py-16 px-10 flex flex-col justify-between h-screen">
+        <aside className="flex-shrink-0 sticky top-0 left-0 bg-azul text-white py-16 px-10 flex flex-col justify-between h-screen">
             <div className="w-64">
                 <div className="flex flex-col items-center mb-8">
                     <Image
