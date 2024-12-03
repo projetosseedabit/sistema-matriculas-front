@@ -30,13 +30,20 @@ export default function EditClassPage() {
     async function saveClass(event: FormEvent) {
         event.preventDefault();
 
-        const body = {
+        const body: {
+            fullName: string;
+            lessonSchedule: string;
+            mode: string;
+            maxSeats: number | null;
+            availableSeats: number | null;
+            paymentAmount: number;
+        } = {
             fullName: name,
             lessonSchedule: `${dayOfTheWeek}|${startTime}-${endTime}`,
             mode: mode,
             maxSeats: maxSeats,
-            availableSeats: 0,
-            paymentAmount: 95,
+            availableSeats: null,
+            paymentAmount: enrollmentValue,
         };
 
         if (
@@ -61,6 +68,9 @@ export default function EditClassPage() {
                 {
                     method: "PUT",
                     body: JSON.stringify(body),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
                 }
             );
 
@@ -86,6 +96,7 @@ export default function EditClassPage() {
                     maxSeats: null | number;
                     availableSeats: null | number;
                     createdAt: string;
+                    paymentAmount: number;
                 };
             } = await response.json();
             const fetchedClass = data.class;
@@ -102,7 +113,7 @@ export default function EditClassPage() {
             setStartTime(startTime);
             setEndTime(endTime);
             setMode(fetchedClass.mode);
-            // setValorMatricula(fetchedClass)
+            setEnrollmentValue(fetchedClass.paymentAmount);
             setMaxSeats(fetchedClass.maxSeats);
 
             setAvailableSeats(fetchedClass.availableSeats);
