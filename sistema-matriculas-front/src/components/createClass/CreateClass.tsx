@@ -6,7 +6,6 @@ const CreateClass: React.FC = () => {
     async function createClass(event: FormEvent) {
         event.preventDefault();
         setIsLoading(true);
-
         const response = await fetchWithToken(
             "https://king-prawn-app-3bepj.ondigitalocean.app/class",
             {
