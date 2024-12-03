@@ -1,5 +1,4 @@
-'use client';
-
+'use client'
 import { useState, useEffect } from "react";
 import { ClassCard } from "@/components/class-card/class-card";
 import Header from "../components/header";
@@ -42,7 +41,7 @@ export default function RootLayout() {
 
         const formattedClasses = data.allClass.map((classData: Class) => ({
           ...classData,
-          createdAt: new Date(classData.createdAt),
+          createdAt: classData.createdAt,
         }));
         setClasses(formattedClasses);
       } catch (error) {
@@ -63,32 +62,39 @@ export default function RootLayout() {
     <>
       <Header />
       <main className="min-h-screen p-4 sm:p-6 lg:p-8 max-w-screen-xl mx-auto">
-      <ProgressBar currentStep={currentStep} />
-  <div className="space-y-6">
-    {classes.map((classData) => (
-      <div key={classData.id}>
-        <ClassCard
-          id={classData.id}
-          value={classData.id}
-          checked={selectedOption === classData.id}
-          onChange={handleSelection}
-          dayOfWeek={getDayName(classData.lessonSchedule)}
-          mode={classData.mode === "IN_PERSON" ? "Presencial" : "On-line"}
-          totalVacancies={classData.maxSeats}
-          vacanciesFilled={classData.availableSeats}
-          time={getTime(classData.lessonSchedule)}
-          price={90}
-        />
-      </div>
-    ))}
-  </div>
-  <div className="flex justify-center mt-8">
-    <Link href="/forms">
-      <Button color="bg-[#FFA12B]" label="Avançar" />
-    </Link>
-  </div>
-</main>
-
+        <ProgressBar currentStep={currentStep} />
+        <div className="space-y-6">
+          {classes.map((classData) => (
+            <div key={classData.id}>
+              <ClassCard
+                id={classData.id}
+                value={classData.id}
+                checked={selectedOption === classData.id}
+                onChange={handleSelection}
+                dayOfWeek={getDayName(classData.lessonSchedule)}
+                mode={classData.mode === "IN_PERSON" ? "Presencial" : "On-line"}
+                totalVacancies={classData.maxSeats}
+                vacanciesFilled={classData.availableSeats}
+                time={getTime(classData.lessonSchedule)}
+                price={90}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-center mt-8">
+        <Link href={selectedOption !== null ? `/forms?classId=${selectedOption}&mode=${classes.filter((Class) => Class.id === selectedOption)[0].mode}` : "#"}>
+          <Button
+            color="bg-[#FFA12B]"
+            label="Avançar"
+            onClick={() => {
+              if (selectedOption === null) {
+                alert("Por favor, selecione uma turma antes de avançar.");
+              }
+            }}
+          />
+        </Link>
+        </div>
+      </main>
     </>
   );
 }
