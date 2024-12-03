@@ -22,19 +22,38 @@ function getScheduleInfo(lessonSchedule: string): {
 export default function EditClassPage() {
     const { id } = useParams();
 
+    const [availableSeats, setAvailableSeats] = useState<number | null>(0);
+    const [originalMaxSeats, setOriginalMaxSeats] = useState<number | null>(0);
+
+    const [maxSeatError, setMaxSeatError] = useState("");
+
     async function saveClass(event: FormEvent) {
         event.preventDefault();
 
         const body = {
-            fullName: nome,
-            lessonSchedule: `${dia}|${horarioInicio}-${horarioFim}`,
-            mode: modalidade,
-            maxSeats: quantidadeAlunos,
-            availableSeats: quantidadeAlunos,
+            fullName: name,
+            lessonSchedule: `${dayOfTheWeek}|${startTime}-${endTime}`,
+            mode: mode,
+            maxSeats: maxSeats,
+            availableSeats: 0,
             paymentAmount: 95,
         };
 
-        console.log(body);
+        if (
+            mode === "IN_PERSON" &&
+            availableSeats !== null &&
+            originalMaxSeats !== null &&
+            maxSeats !== null
+        ) {
+            if (availableSeats + maxSeats - originalMaxSeats < 0) {
+                setMaxSeatError(
+                    "Quantidade de alunos inscritos é maior que a quantidade máxima de alunos."
+                );
+                return;
+            }
+
+            body.availableSeats = availableSeats + maxSeats - originalMaxSeats;
+        }
 
         try {
             const response = await fetchWithToken(
@@ -78,29 +97,37 @@ export default function EditClassPage() {
                 fetchedClass.lessonSchedule
             );
 
-            setNome(fetchedClass.fullName);
-            setDia(dayOfWeek);
-            setHorarioInicio(startTime);
-            setHorarioFim(endTime);
-            setModalidade(fetchedClass.mode);
+            setName(fetchedClass.fullName);
+            setDayOfTheWeek(dayOfWeek);
+            setStartTime(startTime);
+            setEndTime(endTime);
+            setMode(fetchedClass.mode);
             // setValorMatricula(fetchedClass)
-            setQuantidadeAlunos(fetchedClass.maxSeats);
+            setMaxSeats(fetchedClass.maxSeats);
+
+            setAvailableSeats(fetchedClass.availableSeats);
+            setOriginalMaxSeats(fetchedClass.maxSeats);
         } catch (err) {
-            console.error("Erro ao buscar dados da turma");
+            console.error(`Erro ao buscar dados da turma: ${err}`);
         }
     }
+
+    const [name, setName] = useState("");
+    const [dayOfTheWeek, setDayOfTheWeek] = useState("");
+    const [mode, setMode] = useState("");
+    const [startTime, setStartTime] = useState("");
+    const [endTime, setEndTime] = useState("");
+    const [enrollmentValue, setEnrollmentValue] = useState(0);
+    const [maxSeats, setMaxSeats] = useState<number | null>(0);
 
     useEffect(() => {
         getClassData();
     }, []);
 
-    const [nome, setNome] = useState("");
-    const [dia, setDia] = useState("");
-    const [modalidade, setModalidade] = useState("");
-    const [horarioInicio, setHorarioInicio] = useState("");
-    const [horarioFim, setHorarioFim] = useState("");
-    const [valorMatricula, setValorMatricula] = useState(0);
-    const [quantidadeAlunos, setQuantidadeAlunos] = useState<number | null>(0);
+    useEffect(() => {
+        setMaxSeatError("");
+    }, [maxSeats]);
+
     return (
         <div className="flex justify-center items-center h-screen">
             <div className="px-8 py-6 rounded-lg border-2 border-azul">
@@ -122,8 +149,8 @@ export default function EditClassPage() {
                                 name="name"
                                 className="w-52 text-azul placeholder:text-zinc-500 px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
                                 placeholder="Nome"
-                                value={nome}
-                                onChange={(e) => setNome(e.target.value)}
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
                             />
                         </div>
                         <div className="w-full flex justify-between items-center text-azul">
@@ -134,8 +161,10 @@ export default function EditClassPage() {
                                 name="dia"
                                 id="dia"
                                 className="w-52 text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
-                                value={dia}
-                                onChange={(e) => setDia(e.target.value)}
+                                value={dayOfTheWeek}
+                                onChange={(e) =>
+                                    setDayOfTheWeek(e.target.value)
+                                }
                             >
                                 <option value="" disabled>
                                     Dia da turma
@@ -158,8 +187,8 @@ export default function EditClassPage() {
                                 name="modalidade"
                                 id="modalidade"
                                 className="w-52 text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
-                                value={modalidade}
-                                onChange={(e) => setModalidade(e.target.value)}
+                                value={mode}
+                                onChange={(e) => setMode(e.target.value)}
                             >
                                 <option value="" disabled>
                                     Modalidade da turma
@@ -181,9 +210,9 @@ export default function EditClassPage() {
                                     name="startTime"
                                     id="startTime"
                                     className="w-[5.5rem] text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
-                                    value={horarioInicio}
+                                    value={startTime}
                                     onChange={(e) =>
-                                        setHorarioInicio(e.target.value)
+                                        setStartTime(e.target.value)
                                     }
                                 />
                                 às
@@ -192,10 +221,8 @@ export default function EditClassPage() {
                                     name="endTime"
                                     id="endTime"
                                     className="w-[5.5rem] text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
-                                    value={horarioFim}
-                                    onChange={(e) =>
-                                        setHorarioFim(e.target.value)
-                                    }
+                                    value={endTime}
+                                    onChange={(e) => setEndTime(e.target.value)}
                                 />
                             </div>
                         </div>
@@ -210,10 +237,10 @@ export default function EditClassPage() {
                                 placeholder="R$ 000,00"
                                 className="w-24 text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul"
                                 value={
-                                    valorMatricula === 0 ? "" : valorMatricula
+                                    enrollmentValue === 0 ? "" : enrollmentValue
                                 }
                                 onChange={(e) =>
-                                    setValorMatricula(Number(e.target.value))
+                                    setEnrollmentValue(Number(e.target.value))
                                 }
                             />
                         </div>
@@ -231,16 +258,20 @@ export default function EditClassPage() {
                                 placeholder="000"
                                 className="w-24 text-azul px-2 py-1 border border-azul rounded outline-none focus:ring-1 ring-azul disabled:border-zinc-500 disabled:bg-zinc-300 disabled:cursor-not-allowed"
                                 value={
-                                    quantidadeAlunos !== null &&
-                                    quantidadeAlunos !== 0
-                                        ? quantidadeAlunos
+                                    maxSeats !== null && maxSeats !== 0
+                                        ? maxSeats
                                         : ""
                                 }
                                 onChange={(e) =>
-                                    setQuantidadeAlunos(Number(e.target.value))
+                                    setMaxSeats(Number(e.target.value))
                                 }
-                                disabled={modalidade === "ONLINE"}
+                                disabled={mode === "ONLINE"}
                             />
+                            {maxSeatError !== "" ? (
+                                <p className="text-vermelho font-medium">
+                                    {maxSeatError}
+                                </p>
+                            ) : null}
                         </div>
                         <button
                             type="submit"
@@ -252,155 +283,5 @@ export default function EditClassPage() {
                 </div>
             </div>
         </div>
-
-        // <div className="flex">
-        //     <div className="w-full max-w-4xl p-8 bg-white border-2 border-azul rounded-xl shadow-lg">
-        //         <h1 className="text-2xl font-bold mb-4">Editar turma</h1>
-        //         <form onSubmit={handleSubmit} className="space-y-4">
-        //             <div className="flex justify-between w-[35rem] items-center">
-        //                 <label
-        //                     htmlFor="nome"
-        //                     className="block text-sm font-medium"
-        //                 >
-        //                     Nome da turma
-        //                 </label>
-        //                 <input
-        //                     id="nome"
-        //                     name="nome"
-        //                     value={formData.nome}
-        //                     onChange={handleChange}
-        //                     className="mt-1 p-2 border-2 border-azul rounded w-[180px] h-[40px]"
-        //                 />
-        //             </div>
-        //             <div className="flex justify-between w-[35rem] items-center">
-        //                 <label
-        //                     htmlFor="dia"
-        //                     className="block text-sm font-medium"
-        //                 >
-        //                     Selecione o dia da turma
-        //                 </label>
-        //                 <select
-        //                     id="dia"
-        //                     name="dia"
-        //                     value={formData.dia}
-        //                     onChange={handleChange}
-        //                     className="mt-1 p-2 border-2 border-azul rounded w-[180px] h-[40px]"
-        //                 >
-        //                     <option value="" disabled>
-        //                         Dia da turma
-        //                     </option>
-        //                     <option value="segunda">Segunda-feira</option>
-        //                     <option value="terca">Terça-feira</option>
-        //                     <option value="quarta">Quarta-feira</option>
-        //                     <option value="quinta">Quinta-feira</option>
-        //                     <option value="sexta">Sexta-feira</option>
-        //                 </select>
-        //             </div>
-
-        //             <div className="flex justify-between items-center">
-        //                 <label
-        //                     htmlFor="modalidade"
-        //                     className="block text-sm font-medium"
-        //                 >
-        //                     Selecione a modalidade
-        //                 </label>
-        //                 <select
-        //                     id="modalidade"
-        //                     name="modalidade"
-        //                     value={formData.modalidade}
-        //                     onChange={handleChange}
-        //                     className="mt-1 p-2 border-2 border-azul rounded w-full w-[180px] h-[40px]"
-        //                 >
-        //                     <option value="" disabled>
-        //                         Modalidade da turma
-        //                     </option>
-        //                     <option value="presencial">Presencial</option>
-        //                     <option value="online">Online</option>
-        //                 </select>
-        //             </div>
-
-        //             <div className="grid grid-cols-2 gap-4">
-        //                 <div>
-        //                     <label
-        //                         htmlFor="horarioInicio"
-        //                         className="block text-sm font-medium"
-        //                     >
-        //                         Horário de início
-        //                     </label>
-        //                     <input
-        //                         type="time"
-        //                         id="horarioInicio"
-        //                         name="horarioInicio"
-        //                         value={formData.horarioInicio}
-        //                         onChange={handleChange}
-        //                         className="mt-1 p-2 border-2 border-azul rounded w-full"
-        //                     />
-        //                 </div>
-
-        //                 <div>
-        //                     <label
-        //                         htmlFor="horarioFim"
-        //                         className="block text-sm font-medium"
-        //                     >
-        //                         Horário de término
-        //                     </label>
-        //                     <input
-        //                         type="time"
-        //                         id="horarioFim"
-        //                         name="horarioFim"
-        //                         value={formData.horarioFim}
-        //                         onChange={handleChange}
-        //                         className="mt-1 p-2 border-2 border-azul rounded w-full"
-        //                     />
-        //                 </div>
-        //             </div>
-
-        //             <div className=" grid grid-cols-1 gap-4 items-center">
-        //                 <div className="flex justify-between items-center space-x-4">
-        //                     <label
-        //                         htmlFor="valorMatricula"
-        //                         className="block text-sm font-medium w-1/4"
-        //                     >
-        //                         Valor da matrícula
-        //                     </label>
-        //                     <input
-        //                         type="number"
-        //                         id="valorMatricula"
-        //                         name="valorMatricula"
-        //                         value={formData.valorMatricula}
-        //                         onChange={handleChange}
-        //                         className="mt-1 p-2 border-2 border-azul rounded w-full w-[180px] h-[40px]"
-        //                         placeholder="R$ 000,00"
-        //                     />
-        //                 </div>
-        //             </div>
-
-        //             <div className="flex justify-between items-center">
-        //                 <label
-        //                     htmlFor="quantidadeAlunos"
-        //                     className="block text-sm font-medium"
-        //                 >
-        //                     Quantidade de alunos
-        //                 </label>
-        //                 <input
-        //                     type="number"
-        //                     id="quantidadeAlunos"
-        //                     name="quantidadeAlunos"
-        //                     value={formData.quantidadeAlunos}
-        //                     onChange={handleChange}
-        //                     className="mt-1 p-2 border-2 border-azul rounded w-full w-[180px] h-[40px]"
-        //                     placeholder="Digite"
-        //                 />
-        //             </div>
-
-        //             <button
-        //                 type="submit"
-        //                 className="bg-laranja text-white py-2 px-4 rounded w-full"
-        //             >
-        //                 Salvar turma
-        //             </button>
-        //         </form>
-        //     </div>
-        // </div>
     );
 }
