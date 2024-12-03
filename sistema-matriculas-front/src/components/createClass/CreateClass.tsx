@@ -18,12 +18,20 @@ const CreateClass: React.FC = () => {
                     mode: mode,
                     maxSeats: maxSeats,
                     availableSeats: maxSeats,
+                    paymentAmount: enrollmentValue,
                 }),
             }
         );
 
         if (response.ok) {
             alert("Turma criada com sucesso!");
+            setName("")
+            setDayOfTheWeek("")
+            setMode("")
+            setStartTime("")
+            setEndTime("")
+            setEnrollmentValue(0)
+            setMaxSeats(0)
         } else {
             alert("Erro ao criar turma!");
         }
