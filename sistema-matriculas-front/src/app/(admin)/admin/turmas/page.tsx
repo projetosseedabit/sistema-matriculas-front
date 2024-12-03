@@ -12,6 +12,7 @@ type Class = {
     maxSeats: number; // 40
     availableSeats: number; // 16
     createdAt: string; // "2021-09-20T19:00:00"
+    paymentAmount: number; // 90
 };
 
 type ClassesResponse = {
@@ -225,7 +226,7 @@ export default function Classes() {
                                               : "Online"
                                       }
                                       id={c.id}
-                                      price={c.mode === "IN_PERSON" ? 90 : 75}
+                                      price={c.paymentAmount}
                                       startTime={startTime}
                                       endTime={endTime}
                                       totalVacancies={c.maxSeats}
