@@ -551,16 +551,21 @@ export default function FormGuardian() {
                             // Envia os dados como uma string JSON
                         }
                     )
-                        .then((response) => response.json()) // Assume que a resposta será um JSON
+                        .then((response) => {
+                            if (!response.ok) {
+                                throw new Error(
+                                    "Erro ao criar matrícula, por favor, revise suas informações!"
+                                );
+                            }
+
+                            return response.json();
+                        }) // Assume que a resposta será um JSON
                         .then((result) => {
                             router.push(result.init_point);
                         })
                         .catch((error) => {
-                            console.error("Error:", error);
                             setIsError(true);
-                            setErrorMessage(
-                                "Erro ao criar matrícula, por favor, revise suas informações!"
-                            );
+                            setErrorMessage(error);
                         });
                 }}
                 validationSchema={validationSchema} // esquema de validação yup
