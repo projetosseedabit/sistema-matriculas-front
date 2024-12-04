@@ -129,6 +129,7 @@ export default function FormGuardian() {
                             values.fatherCep
                         ),
                         status: "RESERVED",
+                        paymentMethod: "MERCADO_PAGO",
                     };
                     console.log("formulário:", data);
 
