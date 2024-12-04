@@ -1,4 +1,4 @@
-interface Registration {
+export interface Registration {
     id: string;
     studentId: string;
     studentName: string;

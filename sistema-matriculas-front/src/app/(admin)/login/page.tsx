@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 
@@ -164,4 +164,10 @@ const LoginPage: React.FC = () => {
     );
 };
 
-export default LoginPage;
+export default function Page() {
+    return (
+        <Suspense>
+            <LoginPage />
+        </Suspense>
+    );
+}
