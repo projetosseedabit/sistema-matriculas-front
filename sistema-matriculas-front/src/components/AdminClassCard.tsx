@@ -5,7 +5,7 @@ interface ClassCardProps {
     dayOfWeek: string;
     mode: string;
     totalVacancies: number | null;
-    vacanciesFilled: number | null;
+    vacanciesLeft: number | null;
     startTime: string;
     endTime: string;
     price: number;
@@ -37,7 +37,7 @@ export const AdminClassCard: React.FC<ClassCardProps> = ({
     startTime,
     endTime,
     totalVacancies,
-    vacanciesFilled,
+    vacanciesLeft,
     price,
     name,
     handleDeleteClass,
@@ -59,8 +59,8 @@ export const AdminClassCard: React.FC<ClassCardProps> = ({
                     <div className="flex justify-between items-center">
                         <h3 className="text-base font-medium">
                             <span className="w-[3.75rem]">Vagas</span>{" "}
-                            <span className="font-bold">{vacanciesFilled}</span>{" "}
-                            | {totalVacancies}
+                            <span className="font-bold">{vacanciesLeft}</span> |{" "}
+                            {totalVacancies}
                         </h3>
                     </div>
                 )}

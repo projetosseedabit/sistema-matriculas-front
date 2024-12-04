@@ -230,7 +230,7 @@ export default function Classes() {
                                       startTime={startTime}
                                       endTime={endTime}
                                       totalVacancies={c.maxSeats}
-                                      vacanciesFilled={c.availableSeats}
+                                      vacanciesLeft={c.availableSeats}
                                       name={c.fullName}
                                       handleDeleteClass={handleDeleteClass}
                                   />
