@@ -1,47 +1,424 @@
 "use client";
 
-import { Field, Form, Formik } from "formik";
-// import * as Yup from "yup";
-import { ErrorMessage } from "formik";
+import { Form, Formik } from "formik";
+import * as Yup from "yup";
 import buildAddress from "@/utils/buildAddress";
 import { useRouter, useSearchParams } from "next/navigation";
+import { InputField } from "../InputField";
+import { useState } from "react";
 // import { IsAdultEnum } from "@/app/(user)/forms/page";
 
-// const validationSchema = Yup.object().shape({
-//   birthDate: Yup.date()
-//     .required("Campo obrigatório")
-//     .max(new Date(), "A data deve ser no passado"),
-//   fullStudentName: Yup.string().required("Campo obrigatório"),
-//   socialName: Yup.string(), // Opcional, sem validação específica
-//   studentCpf: Yup.string().required("Campo obrigatório"),
-//   studentRg: Yup.string().required("Campo obrigatório"),
-//   studentPhone: Yup.string().required("Campo obrigatório"),
-//   studentEmail: Yup.string().email("Digite um e-mail válido").required("Campo obrigatório"),
-//   studentCep: Yup.string().required("Campo obrigatório"),
-//   studentNeighborhood: Yup.string().required("Campo obrigatório"),
-//   studentCity: Yup.string().required("Campo obrigatório"),
-//   studentState: Yup.string().required("Campo obrigatório"),
-//   studentRoad: Yup.string().required("Campo obrigatório"),
-//   studentHouseNumber: Yup.string().required("Campo obrigatório"),
-//   fullMotherName: Yup.string().required("Campo obrigatório"),
-//   motherCpf: Yup.string().required("Campo obrigatório"),
-//   motherRg: Yup.string().required("Campo obrigatório"),
-//   motherPhone: Yup.string().required("Campo obrigatório"),
-//   motherEmail: Yup.string().email("Digite um e-mail válido").required("Campo obrigatório"),
-//   motherAddress: Yup.string().required("Campo obrigatório"),
-//   fullFatherName: Yup.string().required("Campo obrigatório"),
-//   fatherCpf: Yup.string().required("Campo obrigatório"),
-//   fatherRg: Yup.string().required("Campo obrigatório"),
-//   fatherPhone: Yup.string().required("Campo obrigatório"),
-//   fatherEmail: Yup.string().email("Digite um e-mail válido").required("Campo obrigatório"),
-//   fatherAddress: Yup.string().required("Campo obrigatório"),
-// });
+function getAgeClassification(birthDate: string): "ADULT" | "MINOR" {
+    const today: Date = new Date();
+    const birth: Date = new Date(birthDate);
+
+    let age: number = today.getFullYear() - birth.getFullYear();
+    const monthDifference: number = today.getMonth() - birth.getMonth();
+
+    if (
+        monthDifference < 0 ||
+        (monthDifference === 0 && today.getDate() < birth.getDate())
+    ) {
+        age--;
+    }
+
+    return age >= 18 ? "ADULT" : "MINOR";
+}
+
+function validateCpf(cpf: string) {
+    const onlyNumbers = cpf.replace(/\D/g, "");
+    if (onlyNumbers.length !== 11) {
+        return false;
+    }
+
+    const numbers = onlyNumbers.split("").map(Number);
+
+    let sum = 0;
+    let rest;
+
+    for (let i = 0; i <= 8; i++) {
+        sum += numbers[i] * (i + 1);
+    }
+
+    rest = sum % 11;
+
+    if (rest === 10) {
+        rest = 0;
+    }
+
+    if (rest !== numbers[9]) {
+        return false;
+    }
+
+    sum = 0;
+
+    for (let i = 0; i <= 9; i++) {
+        sum += numbers[i] * i;
+    }
+
+    rest = sum % 11;
+
+    if (rest === 10) {
+        rest = 0;
+    }
+
+    if (rest !== numbers[10]) {
+        return false;
+    }
+
+    return true;
+}
+
+function validatePhoneNumber(phone: string) {
+    const onlyNumbers = phone.replace(/\D/g, "");
+    return onlyNumbers.length === 11 || onlyNumbers.length === 10;
+}
+
+function validateCep(cep: string) {
+    const onlyNumbers = cep.replace(/\D/g, "");
+    return onlyNumbers.length === 8;
+}
+
+const validationSchema = Yup.object().shape({
+    birthDate: Yup.date()
+        .required("Campo obrigatório")
+        .max(new Date(), "A data deve ser no passado"),
+    fullStudentName: Yup.string().required("Campo obrigatório"),
+    socialName: Yup.string().required("Campo obrigatório"),
+    studentCpf: Yup.string()
+        .required("Campo obrigatório")
+        .test({ test: validateCpf, message: "Digite um CPF válido" }),
+    studentRg: Yup.string().required("Campo obrigatório"),
+    studentPhone: Yup.string().required("Campo obrigatório").test({
+        test: validatePhoneNumber,
+        message: "Digite um telefone válido",
+    }),
+    studentEmail: Yup.string()
+        .email("Digite um e-mail válido")
+        .required("Campo obrigatório"),
+    studentCep: Yup.string().required("Campo obrigatório").test({
+        test: validateCep,
+        message: "Digite um CEP válido",
+    }),
+    studentNeighborhood: Yup.string().required("Campo obrigatório"),
+    studentCity: Yup.string().required("Campo obrigatório"),
+    studentState: Yup.string().required("Campo obrigatório"),
+    studentRoad: Yup.string().required("Campo obrigatório"),
+    studentHouseNumber: Yup.string().required("Campo obrigatório"),
+    fullMotherName: Yup.string().required("Campo obrigatório"),
+    motherCpf: Yup.string()
+        .required("Campo obrigatório")
+        .test({ test: validateCpf, message: "Digite um CPF válido" }),
+    motherRg: Yup.string().required("Campo obrigatório"),
+    motherPhone: Yup.string().required("Campo obrigatório").test({
+        test: validatePhoneNumber,
+        message: "Digite um telefone válido",
+    }),
+    motherEmail: Yup.string()
+        .email("Digite um e-mail válido")
+        .required("Campo obrigatório"),
+    motherCep: Yup.string().required("Campo obrigatório").test({
+        test: validateCep,
+        message: "Digite um CEP válido",
+    }),
+    motherNeighborhood: Yup.string().required("Campo obrigatório"),
+    motherCity: Yup.string().required("Campo obrigatório"),
+    motherState: Yup.string().required("Campo obrigatório"),
+    motherRoad: Yup.string().required("Campo obrigatório"),
+    motherHouseNumber: Yup.string().required("Campo obrigatório"),
+    fullFatherName: Yup.string().required("Campo obrigatório"),
+    fatherCpf: Yup.string()
+        .required("Campo obrigatório")
+        .test({ test: validateCpf, message: "Digite um CPF válido" }),
+    fatherRg: Yup.string().required("Campo obrigatório"),
+    fatherPhone: Yup.string().required("Campo obrigatório").test({
+        test: validatePhoneNumber,
+        message: "Digite um telefone válido",
+    }),
+    fatherEmail: Yup.string()
+        .email("Digite um e-mail válido")
+        .required("Campo obrigatório"),
+    fatherCep: Yup.string().required("Campo obrigatório").test({
+        test: validateCep,
+        message: "Digite um CEP válido",
+    }),
+    fatherNeighborhood: Yup.string().required("Campo obrigatório"),
+    fatherCity: Yup.string().required("Campo obrigatório"),
+    fatherState: Yup.string().required("Campo obrigatório"),
+    fatherRoad: Yup.string().required("Campo obrigatório"),
+    fatherHouseNumber: Yup.string().required("Campo obrigatório"),
+});
 
 export default function FormGuardian() {
     const searchParams = useSearchParams();
     const classId = searchParams.get("classId");
     const mode = searchParams.get("mode");
     const router = useRouter();
+    const [isError, setIsError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(
+        "Erro ao criar matrícula, por favor, revise suas informações!"
+    );
+
+    type FormField = {
+        label: string;
+        labelObs?: string;
+        name: string;
+        type: string;
+        required: boolean;
+        placeholder: string;
+    };
+
+    const fields: FormField[] = [
+        {
+            label: "Data de Nascimento",
+            name: "birthDate",
+            type: "date",
+            required: true,
+            placeholder: "Digite a data de nascimento",
+        },
+        {
+            label: "Nome do aluno (a)",
+            name: "fullStudentName",
+            type: "text",
+            required: true,
+            placeholder: "Digite o nome do aluno (a)",
+        },
+        {
+            label: "Nome social",
+            labelObs: "(repetir nome, caso não possua)",
+            name: "socialName",
+            type: "text",
+            required: true,
+            placeholder: "Digite o nome social",
+        },
+        {
+            label: "CPF do aluno",
+            name: "studentCpf",
+            type: "text",
+            required: true,
+            placeholder: "Digite o CPF",
+        },
+        {
+            label: "RG do aluno",
+            name: "studentRg",
+            type: "text",
+            required: true,
+            placeholder: "Digite o RG",
+        },
+        {
+            label: "Telefone do aluno",
+            labelObs: "(com DDD)",
+            name: "studentPhone",
+            type: "text",
+            required: true,
+            placeholder: "Digite o telefone",
+        },
+        {
+            label: "E-mail do aluno",
+            name: "studentEmail",
+            type: "email",
+            required: true,
+            placeholder: "Digite o e-mail",
+        },
+        {
+            label: "CEP do aluno",
+            name: "studentCep",
+            type: "text",
+            required: true,
+            placeholder: "Digite o CEP",
+        },
+        {
+            label: "Bairro do aluno",
+            name: "studentNeighborhood",
+            type: "text",
+            required: true,
+            placeholder: "Digite o bairro",
+        },
+        {
+            label: "Cidade do aluno",
+            name: "studentCity",
+            type: "text",
+            required: true,
+            placeholder: "Digite a cidade",
+        },
+        {
+            label: "Estado do aluno",
+            name: "studentState",
+            type: "text",
+            required: true,
+            placeholder: "Digite o estado",
+        },
+        {
+            label: "Rua do aluno",
+            name: "studentRoad",
+            type: "text",
+            required: true,
+            placeholder: "Digite a rua",
+        },
+        {
+            label: "Número da casa",
+            name: "studentHouseNumber",
+            type: "text",
+            required: true,
+            placeholder: "Digite o número da casa",
+        },
+        {
+            label: "Nome completo da mãe",
+            name: "fullMotherName",
+            type: "text",
+            required: true,
+            placeholder: "Digite o nome completo da mãe",
+        },
+        {
+            label: "CPF da mãe",
+            name: "motherCpf",
+            type: "text",
+            required: true,
+            placeholder: "Digite o CPF",
+        },
+        {
+            label: "RG da mãe",
+            name: "motherRg",
+            type: "text",
+            required: true,
+            placeholder: "Digite o RG",
+        },
+        {
+            label: "Telefone da mãe",
+            labelObs: "(com DDD)",
+            name: "motherPhone",
+            type: "text",
+            required: true,
+            placeholder: "Digite o telefone",
+        },
+        {
+            label: "E-mail da mãe",
+            name: "motherEmail",
+            type: "email",
+            required: true,
+            placeholder: "Digite o e-mail",
+        },
+        {
+            label: "CEP da mãe",
+            name: "motherCep",
+            type: "text",
+            required: true,
+            placeholder: "Digite o CEP",
+        },
+        {
+            label: "Bairro da mãe",
+            name: "motherNeighborhood",
+            type: "text",
+            required: true,
+            placeholder: "Digite o bairro",
+        },
+        {
+            label: "Cidade da mãe",
+            name: "motherCity",
+            type: "text",
+            required: true,
+            placeholder: "Digite a cidade",
+        },
+        {
+            label: "Estado da mãe",
+            name: "motherState",
+            type: "text",
+            required: true,
+            placeholder: "Digite o estado",
+        },
+        {
+            label: "Rua da mãe",
+            name: "motherRoad",
+            type: "text",
+            required: true,
+            placeholder: "Digite a rua",
+        },
+        {
+            label: "Número da casa da mãe",
+            name: "motherHouseNumber",
+            type: "text",
+            required: true,
+            placeholder: "Digite o número da casa",
+        },
+        {
+            label: "Nome completo do pai",
+            name: "fullFatherName",
+            type: "text",
+            required: true,
+            placeholder: "Digite o nome completo do pai",
+        },
+        {
+            label: "CPF do pai",
+            name: "fatherCpf",
+            type: "text",
+            required: true,
+            placeholder: "Digite o CPF",
+        },
+        {
+            label: "RG do pai",
+            name: "fatherRg",
+            type: "text",
+            required: true,
+            placeholder: "Digite o RG",
+        },
+        {
+            label: "Telefone do pai",
+            labelObs: "(com DDD)",
+            name: "fatherPhone",
+            type: "text",
+            required: true,
+            placeholder: "Digite o telefone",
+        },
+        {
+            label: "E-mail do pai",
+            name: "fatherEmail",
+            type: "email",
+            required: true,
+            placeholder: "Digite o e-mail",
+        },
+        {
+            label: "CEP do pai",
+            name: "fatherCep",
+            type: "text",
+            required: true,
+            placeholder: "Digite o CEP",
+        },
+        {
+            label: "Bairro do pai",
+            name: "fatherNeighborhood",
+            type: "text",
+            required: true,
+            placeholder: "Digite o bairro",
+        },
+        {
+            label: "Cidade do pai",
+            name: "fatherCity",
+            type: "text",
+            required: true,
+            placeholder: "Digite a cidade",
+        },
+        {
+            label: "Estado do pai",
+            name: "fatherState",
+            type: "text",
+            required: true,
+            placeholder: "Digite o estado",
+        },
+        {
+            label: "Rua do pai",
+            name: "fatherRoad",
+            type: "text",
+            required: true,
+            placeholder: "Digite a rua",
+        },
+        {
+            label: "Número da casa do pai",
+            name: "fatherHouseNumber",
+            type: "text",
+            required: true,
+            placeholder: "Digite o número da casa",
+        },
+    ];
 
     return (
         <>
@@ -84,13 +461,42 @@ export default function FormGuardian() {
                     fatherHouseNumber: "",
                 }}
                 onSubmit={async (values) => {
-                    console.log(values);
+                    setIsError(false);
+                    if (
+                        values.studentEmail === values.motherEmail ||
+                        values.studentEmail === values.fatherEmail ||
+                        values.motherEmail === values.fatherEmail
+                    ) {
+                        setIsError(true);
+                        setErrorMessage("Os e-mails devem ser diferentes");
+                        return;
+                    }
+
+                    if (
+                        values.studentCpf === values.motherCpf ||
+                        values.studentCpf === values.fatherCpf ||
+                        values.motherCpf === values.fatherCpf
+                    ) {
+                        setIsError(true);
+                        setErrorMessage("Os CPFs devem ser diferentes");
+                        return;
+                    }
+
+                    if (
+                        values.studentRg === values.motherRg ||
+                        values.studentRg === values.fatherRg ||
+                        values.motherRg === values.fatherRg
+                    ) {
+                        setIsError(true);
+                        setErrorMessage("Os RGs devem ser diferentes");
+                        return;
+                    }
 
                     const data = {
                         fullStudentName: values.fullStudentName,
-                        studentCpf: values.studentCpf,
-                        studentRg: values.studentRg,
-                        studentPhone: values.studentPhone,
+                        studentCpf: values.studentCpf.replace(/\D/g, ""),
+                        studentRg: values.studentRg.replace(/\D/g, ""),
+                        studentPhone: values.studentPhone.replace(/\D/g, ""),
                         studentEmail: values.studentEmail,
                         studentAddress: buildAddress(
                             values.studentState,
@@ -101,13 +507,13 @@ export default function FormGuardian() {
                             values.studentCep
                         ),
                         socialName: values.socialName,
-                        isAdult: "MINOR",
+                        isAdult: getAgeClassification(values.birthDate),
                         mode: mode,
                         id: classId,
                         fullMotherName: values.fullMotherName,
-                        motherCpf: values.motherCpf,
-                        motherRg: values.motherRg,
-                        motherPhone: values.motherPhone,
+                        motherCpf: values.motherCpf.replace(/\D/g, ""),
+                        motherRg: values.motherRg.replace(/\D/g, ""),
+                        motherPhone: values.motherPhone.replace(/\D/g, ""),
                         motherEmail: values.motherEmail,
                         motherAddress: buildAddress(
                             values.motherState,
@@ -118,9 +524,9 @@ export default function FormGuardian() {
                             values.motherCep
                         ),
                         fullFatherName: values.fullFatherName,
-                        fatherCpf: values.fatherCpf,
-                        fatherRg: values.fatherRg,
-                        fatherPhone: values.fatherPhone,
+                        fatherCpf: values.fatherCpf.replace(/\D/g, ""),
+                        fatherRg: values.fatherRg.replace(/\D/g, ""),
+                        fatherPhone: values.fatherPhone.replace(/\D/g, ""),
                         fatherEmail: values.fatherEmail,
                         fatherAddress: buildAddress(
                             values.fatherState,
@@ -133,7 +539,6 @@ export default function FormGuardian() {
                         status: "RESERVED",
                         paymentMethod: "MERCADO_PAGO",
                     };
-                    console.log("formulário:", data);
 
                     fetch(
                         "https://king-prawn-app-3bepj.ondigitalocean.app/forms",
@@ -148,14 +553,17 @@ export default function FormGuardian() {
                     )
                         .then((response) => response.json()) // Assume que a resposta será um JSON
                         .then((result) => {
-                            console.log("Sucesso:", result);
                             router.push(result.init_point);
                         })
                         .catch((error) => {
-                            console.error("Erro:", error);
+                            console.error("Error:", error);
+                            setIsError(true);
+                            setErrorMessage(
+                                "Erro ao criar matrícula, por favor, revise suas informações!"
+                            );
                         });
                 }}
-                //validationSchema={validationSchema}// esquema de validação yup
+                validationSchema={validationSchema} // esquema de validação yup
             >
                 {({ handleSubmit }) => (
                     <div className="max-w-4xl mx-auto p-8 bg-white border border-gray-300 rounded-md shadow-md">
@@ -163,479 +571,29 @@ export default function FormGuardian() {
                             onSubmit={handleSubmit}
                             className="grid grid-cols-1 md:grid-cols-2 gap-6"
                         >
-                            {/* Campos do estudante */}
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    Data de Nascimento{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="date"
-                                    name="birthDate"
-                                    placeholder="Digite a data de nascimento"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            {fields.map((field: FormField) => (
+                                <InputField
+                                    key={field.name}
+                                    label={field.label}
+                                    labelObs={field.labelObs}
+                                    name={field.name}
+                                    type={field.type}
+                                    required={field.required}
+                                    placeholder={field.placeholder}
                                 />
-                                <ErrorMessage
-                                    name="birthDate"
-                                    component="div"
-                                    className="text-red-500 text-sm mt-1"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700 font-medium mb-1">
-                                    Nome do aluno (a){" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="fullStudentName"
-                                    placeholder="Digite o nome do aluno (a)"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                                <ErrorMessage
-                                    name="fullStudentName"
-                                    component="div"
-                                    className="text-red-500 text-sm mt-1"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700 font-medium mb-1">
-                                    Nome social{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="socialName"
-                                    placeholder="Digite o nome social"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700 font-medium mb-1">
-                                    CPF do aluno{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="studentCpf"
-                                    placeholder="Digite o CPF"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700 font-medium mb-1">
-                                    RG do aluno{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="studentRg"
-                                    placeholder="Digite o RG"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700 font-medium mb-1">
-                                    Telefone do aluno{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="studentPhone"
-                                    placeholder="Digite o telefone"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700 font-medium mb-1">
-                                    E-mail do aluno{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="email"
-                                    name="studentEmail"
-                                    placeholder="Digite o e-mail"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700 font-medium mb-1">
-                                    CEP do estudante{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="studentCep"
-                                    placeholder="Digite o CEP"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700 font-medium mb-1">
-                                    Bairro{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="studentNeighborhood"
-                                    placeholder="Digite o bairro"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700 font-medium mb-1">
-                                    Cidade{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="studentCity"
-                                    placeholder="Digite a cidade"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700 font-medium mb-1">
-                                    Estado{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="studentState"
-                                    placeholder="Digite o estado"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700 font-medium mb-1">
-                                    Rua <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="studentRoad"
-                                    placeholder="Digite a rua"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700 font-medium mb-1">
-                                    Número da casa{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="studentHouseNumber"
-                                    placeholder="Digite o número da casa"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            {/* Campos para a mãe */}
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    Nome completo da mãe{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="fullMotherName"
-                                    placeholder="Digite o nome completo da mãe"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    CPF da mãe{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="motherCpf"
-                                    placeholder="Digite o CPF da mãe"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    RG da mãe{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="motherRg"
-                                    placeholder="Digite o RG da mãe"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    Telefone da mãe{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="motherPhone"
-                                    placeholder="Digite o telefone da mãe"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    E-mail da mãe{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="email"
-                                    name="motherEmail"
-                                    placeholder="Digite o e-mail da mãe"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    CEP da mãe{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="motherCep"
-                                    placeholder="Digite o CEP da mãe"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    Bairro da mãe{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="motherNeighborhood"
-                                    placeholder="Digite o bairro da mãe"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    Cidade da mãe{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="motherCity"
-                                    placeholder="Digite a cidade da mãe"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    Estado da mãe{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="motherState"
-                                    placeholder="Digite o estado da mãe"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    Rua da mãe{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="motherRoad"
-                                    placeholder="Digite a rua da mãe"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    Número da casa da mãe{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="motherHouseNumber"
-                                    placeholder="Digite o número da casa da mãe"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            {/* Campos para o pai */}
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    Nome completo do pai{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="fullFatherName"
-                                    placeholder="Digite o nome completo do pai"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    CPF do pai{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="fatherCpf"
-                                    placeholder="Digite o CPF do pai"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    RG do pai{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="fatherRg"
-                                    placeholder="Digite o RG do pai"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    Telefone do pai{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="fatherPhone"
-                                    placeholder="Digite o telefone do pai"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    E-mail do pai{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="email"
-                                    name="fatherEmail"
-                                    placeholder="Digite o e-mail do pai"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    CEP do pai{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="fatherCep"
-                                    placeholder="Digite o CEP do pai"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    Bairro do pai{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="fatherNeighborhood"
-                                    placeholder="Digite o bairro do pai"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    Cidade do pai{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="fatherCity"
-                                    placeholder="Digite a cidade do pai"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    Estado do pai{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="fatherState"
-                                    placeholder="Digite o estado do pai"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    Rua do pai{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="fatherRoad"
-                                    placeholder="Digite a rua do pai"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-gray-700 font-medium mb-1">
-                                    Número da casa do pai{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <Field
-                                    required
-                                    type="text"
-                                    name="fatherHouseNumber"
-                                    placeholder="Digite o número da casa do pai"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                            </div>
+                            ))}
+
                             <button
                                 type="submit"
                                 className="bg-[#FFA12B] text-white px-8 py-4 rounded-md w-full sm:w-auto font-montserrat font-medium text-[18px] sm:text-[20px] lg:text-[22px] transition-all duration-200`"
                             >
                                 Enviar
                             </button>
+                            {isError ? (
+                                <p className="col-span-2 text-vermelho">
+                                    {errorMessage}
+                                </p>
+                            ) : null}
                         </Form>
                     </div>
                 )}
