@@ -89,7 +89,7 @@ export default function EditClassPage() {
             }
         } catch (err) {
             setOpenDialog(true);
-            setDialogMessage("Erro ao editar turma.");
+            setDialogMessage(`Erro ao editar turma. ${err}`);
             setDialogType("error");
         }
     }
