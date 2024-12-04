@@ -84,17 +84,21 @@ export default function Forms() {
         };
 
         return (
-            <div className="border-sky-950 border-2 rounded-md px-4 sm:px-6 lg:px-8 py-5 mx-4 sm:mx-8 md:mx-16 lg:mx-32 xl:mx-60 flex items-center space-x-4 sm:space-x-6">
+            <label
+                htmlFor="acceptContract"
+                className="border-sky-950 border-2 rounded-md px-4 sm:px-6 lg:px-8 py-5 mx-4 sm:mx-8 md:mx-16 lg:mx-32 xl:mx-60 flex items-center space-x-4 sm:space-x-6"
+            >
                 <input
                     type="radio"
                     className="accent-sky-950 scale-125"
                     checked={isChecked}
                     onChange={handleCheckboxChange}
+                    id="acceptContract"
                 />
                 <p className="text-sky-950 text-base sm:text-lg lg:text-1xl xl:text-2xl font-normal">
                     Eu aceito os termos do contrato.
                 </p>
-            </div>
+            </label>
         );
     };
 
