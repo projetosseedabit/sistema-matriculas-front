@@ -5,7 +5,7 @@ import { ProgressBar } from "@/components/progress-bar/progress-bar"; // Importe
 import { Button } from "@/components//Button";
 import Link from "next/link";
 // import { ModeEnum } from "../../page";
-import FormStudent from "@/components/formStudent/page.";
+// import FormStudent from "@/components/formStudent/page.";
 import FormGuardian from "@/components/formGuardian/page";
 // import { ErrorMessage, Field, Form, Formik } from "formik";
 // import * as Yup from 'yup';
@@ -155,7 +155,27 @@ export default function Forms() {
                     />
                 </div>
 
-                {selectedOption === "overEighteen" && (
+                <div className="mt-10 space-y-8">
+                    <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+                        Minuta do contrato
+                    </h2>
+                    <ContractBox />
+                    <ConfirmationBox
+                        onConfirm={(isChecked) =>
+                            console.log("Confirmação:", isChecked)
+                        }
+                    />
+                    <div className="flex flex-col items-center sm:flex-col sm:justify-items-center mx-4 sm:mx-8 lg:mx-60 mt-8 space-y-4 sm:space-y-0 sm:space-x-4 gap-16">
+                        <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+                            Preencha o Formulário
+                        </h2>
+                        <FormGuardian />
+                        <Link href="/">
+                            <Button color="bg-[#003960]" label="Voltar" />
+                        </Link>
+                    </div>
+                </div>
+                {/* {selectedOption === "overEighteen" && (
                     <div className="mt-10 space-y-8">
                         <h2 className="text-sky-950 text-3xl text-center font-light py-4">
                             Minuta do contrato
@@ -199,7 +219,7 @@ export default function Forms() {
                             </Link>
                         </div>
                     </div>
-                )}
+                )} */}
                 {selectedOption == null && (
                     <div className="flex justify-center mt-8">
                         <Link href="/">
