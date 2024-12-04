@@ -6,14 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "mock-api": "json-server --watch db.json --port 5000"
+    "lint": "next lint"
   },
   "dependencies": {
+    "formik": "^2.4.6",
     "jose": "^5.9.6",
     "next": "15.0.2",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "yup": "^1.5.0"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -21,7 +22,6 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "15.0.2",
-    "json-server": "^1.0.0-beta.3",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
