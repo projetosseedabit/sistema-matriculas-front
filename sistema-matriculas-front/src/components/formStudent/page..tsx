@@ -121,6 +121,7 @@ export default function FormStudent() {
                             values.fatherCep
                         ),
                         status: "RESERVED",
+                        paymentMethod: "MERCADO_PAGO",
                     };
                     console.log("formulário:", data);
 

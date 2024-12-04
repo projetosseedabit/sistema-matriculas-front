@@ -4,7 +4,7 @@ import { Field, Form, Formik } from "formik";
 // import * as Yup from "yup";
 import { ErrorMessage } from "formik";
 import buildAddress from "@/utils/buildAddress";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 // import { IsAdultEnum } from "@/app/(user)/forms/page";
 
 // const validationSchema = Yup.object().shape({
@@ -41,7 +41,7 @@ export default function FormGuardianAdmin() {
     const searchParams = new URLSearchParams(window.location.search);
     const classId = searchParams.get("classId");
     const mode = searchParams.get("mode");
-    const navigate = useNavigate();
+    const router = useRouter();
 
     return (
         <>
@@ -131,6 +131,7 @@ export default function FormGuardianAdmin() {
                             values.fatherCep
                         ),
                         status: "RESERVED",
+                        paymentMethod: "MONEY",
                     };
                     console.log("formulário:", data);
 
@@ -148,8 +149,7 @@ export default function FormGuardianAdmin() {
                         .then((response) => response.json()) // Assume que a resposta será um JSON
                         .then((result) => {
                             console.log("Sucesso:", result);
-                            navigate("/admin/success");
-
+                            router.push("/admin/success");
                         })
                         .catch((error) => {
                             console.error("Erro:", error);

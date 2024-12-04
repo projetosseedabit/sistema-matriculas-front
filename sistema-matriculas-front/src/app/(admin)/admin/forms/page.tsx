@@ -6,7 +6,7 @@ import { Button } from "@/components//Button";
 import Link from "next/link";
 // import { ModeEnum } from "../../page";
 import FormGuardianAdmin from "@/components/formGuardianAdmin/page";
-import FormStudentAdmin from "@/components/formStudentAdmin/page.";
+import FormStudentAdmin from "@/components/formStudentAdmin/page";
 // import { ErrorMessage, Field, Form, Formik } from "formik";
 // import * as Yup from 'yup';
 
