@@ -4,6 +4,7 @@ import { Field, Form, Formik } from "formik";
 // import * as Yup from "yup";
 import { ErrorMessage } from "formik";
 import buildAddress from "@/utils/buildAddress";
+import { useRouter } from "next/navigation";
 // import { IsAdultEnum } from "@/app/(user)/forms/page";
 
 // const validationSchema = Yup.object().shape({
@@ -40,6 +41,7 @@ export default function FormStudent() {
     const searchParams = new URLSearchParams(window.location.search);
     const classId = searchParams.get("classId");
     const mode = searchParams.get("mode");
+    const router = useRouter();
 
     return (
         <>
@@ -121,6 +123,7 @@ export default function FormStudent() {
                             values.fatherCep
                         ),
                         status: "RESERVED",
+                        paymentMethod: "MERCADO_PAGO",
                     };
                     console.log("formulário:", data);
 
@@ -137,7 +140,8 @@ export default function FormStudent() {
                     )
                         .then((response) => response.json()) // Assume que a resposta será um JSON
                         .then((result) => {
-                            console.log("Sucesso:", result);
+                            console.log("Success:", result);
+                            router.push(result.init_point);
                         })
                         .catch((error) => {
                             console.error("Erro:", error);
@@ -188,7 +192,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">
-                                    Nome social
+                                    Nome social{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -211,7 +216,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">
-                                    RG do aluno
+                                    RG do aluno{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -222,7 +228,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">
-                                    Telefone do aluno
+                                    Telefone do aluno{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -233,7 +240,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">
-                                    E-mail do aluno
+                                    E-mail do aluno{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="email"
@@ -256,7 +264,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">
-                                    Bairro
+                                    Bairro{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -267,7 +276,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">
-                                    Cidade
+                                    Cidade{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -278,7 +288,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">
-                                    Estado
+                                    Estado{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -289,7 +300,7 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">
-                                    Rua
+                                    Rua <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -300,7 +311,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="block text-gray-700 font-medium mb-1">
-                                    Número da casa
+                                    Número da casa{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -324,7 +336,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="text-gray-700 font-medium mb-1">
-                                    Telefone da mãe
+                                    Telefone da mãe{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -335,7 +348,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="text-gray-700 font-medium mb-1">
-                                    E-mail da mãe
+                                    E-mail da mãe{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="email"
@@ -358,7 +372,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="text-gray-700 font-medium mb-1">
-                                    Bairro da mãe
+                                    Bairro da mãe{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -369,7 +384,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="text-gray-700 font-medium mb-1">
-                                    Cidade da mãe
+                                    Cidade da mãe{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -380,7 +396,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="text-gray-700 font-medium mb-1">
-                                    Estado da mãe
+                                    Estado da mãe{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -391,7 +408,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="text-gray-700 font-medium mb-1">
-                                    Rua da mãe
+                                    Rua da mãe{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -402,7 +420,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="text-gray-700 font-medium mb-1">
-                                    Número da casa da mãe
+                                    Número da casa da mãe{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -426,7 +445,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="text-gray-700 font-medium mb-1">
-                                    Telefone do pai
+                                    Telefone do pai{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -437,7 +457,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="text-gray-700 font-medium mb-1">
-                                    E-mail do pai
+                                    E-mail do pai{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="email"
@@ -460,7 +481,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="text-gray-700 font-medium mb-1">
-                                    Bairro do pai
+                                    Bairro do pai{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -471,7 +493,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="text-gray-700 font-medium mb-1">
-                                    Cidade do pai
+                                    Cidade do pai{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -482,7 +505,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="text-gray-700 font-medium mb-1">
-                                    Estado do pai
+                                    Estado do pai{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -493,7 +517,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="text-gray-700 font-medium mb-1">
-                                    Rua do pai
+                                    Rua do pai{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
@@ -504,7 +529,8 @@ export default function FormStudent() {
                             </div>
                             <div>
                                 <label className="text-gray-700 font-medium mb-1">
-                                    Número da casa do pai
+                                    Número da casa do pai{" "}
+                                    <span className="text-red-500">*</span>
                                 </label>
                                 <Field
                                     type="text"
