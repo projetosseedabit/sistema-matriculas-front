@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { CardStudentType } from "@/components/card-student-type/CardStudentType";
 import { ProgressBar } from "@/components/progress-bar/progress-bar"; // Importe o componente da barra de progresso
 import { Button } from "@/components//Button";
@@ -169,7 +169,9 @@ export default function Forms() {
                         <h2 className="text-sky-950 text-3xl text-center font-light py-4">
                             Preencha o Formulário
                         </h2>
-                        <FormGuardian />
+                        <Suspense>
+                            <FormGuardian />
+                        </Suspense>
                         <Link href="/">
                             <Button color="bg-[#003960]" label="Voltar" />
                         </Link>

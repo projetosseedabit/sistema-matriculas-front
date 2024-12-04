@@ -4,7 +4,7 @@ import { Field, Form, Formik } from "formik";
 // import * as Yup from "yup";
 import { ErrorMessage } from "formik";
 import buildAddress from "@/utils/buildAddress";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 // import { IsAdultEnum } from "@/app/(user)/forms/page";
 
 // const validationSchema = Yup.object().shape({
@@ -38,7 +38,7 @@ import { useRouter } from "next/navigation";
 // });
 
 export default function FormGuardian() {
-    const searchParams = new URLSearchParams(window.location.search);
+    const searchParams = useSearchParams();
     const classId = searchParams.get("classId");
     const mode = searchParams.get("mode");
     const router = useRouter();
@@ -170,6 +170,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="date"
                                     name="birthDate"
                                     placeholder="Digite a data de nascimento"
@@ -187,6 +188,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="fullStudentName"
                                     placeholder="Digite o nome do aluno (a)"
@@ -204,6 +206,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="socialName"
                                     placeholder="Digite o nome social"
@@ -216,6 +219,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="studentCpf"
                                     placeholder="Digite o CPF"
@@ -228,6 +232,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="studentRg"
                                     placeholder="Digite o RG"
@@ -240,6 +245,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="studentPhone"
                                     placeholder="Digite o telefone"
@@ -252,6 +258,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="email"
                                     name="studentEmail"
                                     placeholder="Digite o e-mail"
@@ -264,6 +271,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="studentCep"
                                     placeholder="Digite o CEP"
@@ -276,6 +284,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="studentNeighborhood"
                                     placeholder="Digite o bairro"
@@ -288,6 +297,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="studentCity"
                                     placeholder="Digite a cidade"
@@ -300,6 +310,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="studentState"
                                     placeholder="Digite o estado"
@@ -311,6 +322,7 @@ export default function FormGuardian() {
                                     Rua <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="studentRoad"
                                     placeholder="Digite a rua"
@@ -323,6 +335,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="studentHouseNumber"
                                     placeholder="Digite o número da casa"
@@ -336,6 +349,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="fullMotherName"
                                     placeholder="Digite o nome completo da mãe"
@@ -348,6 +362,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="motherCpf"
                                     placeholder="Digite o CPF da mãe"
@@ -360,6 +375,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="motherRg"
                                     placeholder="Digite o RG da mãe"
@@ -372,6 +388,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="motherPhone"
                                     placeholder="Digite o telefone da mãe"
@@ -384,6 +401,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="email"
                                     name="motherEmail"
                                     placeholder="Digite o e-mail da mãe"
@@ -396,6 +414,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="motherCep"
                                     placeholder="Digite o CEP da mãe"
@@ -408,6 +427,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="motherNeighborhood"
                                     placeholder="Digite o bairro da mãe"
@@ -420,6 +440,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="motherCity"
                                     placeholder="Digite a cidade da mãe"
@@ -432,6 +453,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="motherState"
                                     placeholder="Digite o estado da mãe"
@@ -444,6 +466,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="motherRoad"
                                     placeholder="Digite a rua da mãe"
@@ -456,6 +479,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="motherHouseNumber"
                                     placeholder="Digite o número da casa da mãe"
@@ -469,6 +493,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="fullFatherName"
                                     placeholder="Digite o nome completo do pai"
@@ -481,6 +506,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="fatherCpf"
                                     placeholder="Digite o CPF do pai"
@@ -493,6 +519,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="fatherRg"
                                     placeholder="Digite o RG do pai"
@@ -505,6 +532,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="fatherPhone"
                                     placeholder="Digite o telefone do pai"
@@ -517,6 +545,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="email"
                                     name="fatherEmail"
                                     placeholder="Digite o e-mail do pai"
@@ -529,6 +558,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="fatherCep"
                                     placeholder="Digite o CEP do pai"
@@ -541,6 +571,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="fatherNeighborhood"
                                     placeholder="Digite o bairro do pai"
@@ -553,6 +584,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="fatherCity"
                                     placeholder="Digite a cidade do pai"
@@ -565,6 +597,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="fatherState"
                                     placeholder="Digite o estado do pai"
@@ -577,6 +610,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="fatherRoad"
                                     placeholder="Digite a rua do pai"
@@ -589,6 +623,7 @@ export default function FormGuardian() {
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <Field
+                                    required
                                     type="text"
                                     name="fatherHouseNumber"
                                     placeholder="Digite o número da casa do pai"
