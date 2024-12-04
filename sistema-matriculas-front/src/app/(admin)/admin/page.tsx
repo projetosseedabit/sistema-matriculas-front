@@ -3,6 +3,8 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Logo from "../../../../public/vercel.svg";
 import { fetchWithToken } from "@/utils";
+import { Registration } from "@/model/Registration";
+import { Class } from "@/model/Class";
 
 export default function AdminPage() {
     const [data, setData] = useState<Registration[]>([]);
@@ -165,7 +167,7 @@ export default function AdminPage() {
                 setFilteredData(updatedData);
             }
         } catch (error) {
-            alert("Erro ao buscar dados");
+            alert(`Erro ao buscar dados: ${error}`);
         } finally {
             setLoading(false);
         }
