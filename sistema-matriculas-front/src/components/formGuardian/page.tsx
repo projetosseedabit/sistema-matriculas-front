@@ -8,6 +8,23 @@ import { InputField } from "../InputField";
 import { useState } from "react";
 // import { IsAdultEnum } from "@/app/(user)/forms/page";
 
+function getAgeClassification(birthDate: string): "ADULT" | "MINOR" {
+    const today: Date = new Date();
+    const birth: Date = new Date(birthDate);
+
+    let age: number = today.getFullYear() - birth.getFullYear();
+    const monthDifference: number = today.getMonth() - birth.getMonth();
+
+    if (
+        monthDifference < 0 ||
+        (monthDifference === 0 && today.getDate() < birth.getDate())
+    ) {
+        age--;
+    }
+
+    return age >= 18 ? "ADULT" : "MINOR";
+}
+
 function validateCpf(cpf: string) {
     const onlyNumbers = cpf.replace(/\D/g, "");
     if (onlyNumbers.length !== 11) {
@@ -138,6 +155,9 @@ export default function FormGuardian() {
     const mode = searchParams.get("mode");
     const router = useRouter();
     const [isError, setIsError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(
+        "Erro ao criar matrícula, por favor, revise suas informações!"
+    );
 
     type FormField = {
         label: string;
@@ -442,6 +462,36 @@ export default function FormGuardian() {
                 }}
                 onSubmit={async (values) => {
                     setIsError(false);
+                    if (
+                        values.studentEmail === values.motherEmail ||
+                        values.studentEmail === values.fatherEmail ||
+                        values.motherEmail === values.fatherEmail
+                    ) {
+                        setIsError(true);
+                        setErrorMessage("Os e-mails devem ser diferentes");
+                        return;
+                    }
+
+                    if (
+                        values.studentCpf === values.motherCpf ||
+                        values.studentCpf === values.fatherCpf ||
+                        values.motherCpf === values.fatherCpf
+                    ) {
+                        setIsError(true);
+                        setErrorMessage("Os CPFs devem ser diferentes");
+                        return;
+                    }
+
+                    if (
+                        values.studentRg === values.motherRg ||
+                        values.studentRg === values.fatherRg ||
+                        values.motherRg === values.fatherRg
+                    ) {
+                        setIsError(true);
+                        setErrorMessage("Os RGs devem ser diferentes");
+                        return;
+                    }
+
                     const data = {
                         fullStudentName: values.fullStudentName,
                         studentCpf: values.studentCpf.replace(/\D/g, ""),
@@ -457,7 +507,7 @@ export default function FormGuardian() {
                             values.studentCep
                         ),
                         socialName: values.socialName,
-                        isAdult: "MINOR",
+                        isAdult: getAgeClassification(values.birthDate),
                         mode: mode,
                         id: classId,
                         fullMotherName: values.fullMotherName,
@@ -508,6 +558,9 @@ export default function FormGuardian() {
                         .catch((error) => {
                             console.error("Error:", error);
                             setIsError(true);
+                            setErrorMessage(
+                                "Erro ao criar matrícula, por favor, revise suas informações!"
+                            );
                         });
                 }}
                 validationSchema={validationSchema} // esquema de validação yup
@@ -538,8 +591,7 @@ export default function FormGuardian() {
                             </button>
                             {isError ? (
                                 <p className="col-span-2 text-vermelho">
-                                    Erro ao enviar formulário, tente novamente
-                                    mais tarde!
+                                    {errorMessage}
                                 </p>
                             ) : null}
                         </Form>
