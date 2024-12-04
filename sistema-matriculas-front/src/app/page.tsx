@@ -72,7 +72,31 @@ export default function RootLayout() {
                         createdAt: classData.createdAt,
                     })
                 );
-                setClasses(formattedClasses);
+
+                const filteredClasses = formattedClasses.filter(
+                    (classData: Class) => {
+                        if (classData.availableSeats !== null) {
+                            return classData.availableSeats > 0;
+                        }
+                        return true;
+                    }
+                );
+
+                const sortedClasses = filteredClasses.sort(
+                    (a: Class, b: Class) => {
+                        const nameA = a.fullName.toUpperCase();
+                        const nameB = b.fullName.toUpperCase();
+                        if (nameA < nameB) {
+                            return -1;
+                        }
+                        if (nameA > nameB) {
+                            return 1;
+                        }
+                        return 0;
+                    }
+                );
+
+                setClasses(sortedClasses);
             } catch (error) {
                 console.error("Erro ao buscar as classes:", error);
             }
@@ -135,13 +159,7 @@ export default function RootLayout() {
                         <Button
                             color="bg-[#FFA12B]"
                             label="Avançar"
-                            onClick={() => {
-                                if (selectedOption === null) {
-                                    alert(
-                                        "Por favor, selecione uma turma antes de avançar."
-                                    );
-                                }
-                            }}
+                            disabled={selectedOption === null}
                         />
                     </Link>
                 </div>

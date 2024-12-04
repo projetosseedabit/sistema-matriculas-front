@@ -122,7 +122,19 @@ export default function Classes() {
             const data: ClassesResponse = await response.json();
             console.log(data);
 
-            setClasses(data.allClass);
+            const sortedClasses = data.allClass.sort((a: Class, b: Class) => {
+                const nameA = a.fullName.toUpperCase();
+                const nameB = b.fullName.toUpperCase();
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
+                return 0;
+            });
+
+            setClasses(sortedClasses);
             setIsLoadingClasses(false);
         } catch (err) {
             console.error(err);
