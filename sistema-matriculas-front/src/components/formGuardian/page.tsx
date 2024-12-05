@@ -166,6 +166,7 @@ export default function FormGuardian() {
         type: string;
         required: boolean;
         placeholder: string;
+        inputType?: "select" | "input";
     };
 
     const fields: FormField[] = [
@@ -247,6 +248,7 @@ export default function FormGuardian() {
             type: "text",
             required: true,
             placeholder: "Digite o estado",
+            inputType: "select",
         },
         {
             label: "Rua do aluno",
@@ -325,6 +327,7 @@ export default function FormGuardian() {
             type: "text",
             required: true,
             placeholder: "Digite o estado",
+            inputType: "select",
         },
         {
             label: "Rua da mãe",
@@ -403,6 +406,7 @@ export default function FormGuardian() {
             type: "text",
             required: true,
             placeholder: "Digite o estado",
+            inputType: "select",
         },
         {
             label: "Rua do pai",
@@ -473,9 +477,12 @@ export default function FormGuardian() {
                     }
 
                     if (
-                        values.studentCpf === values.motherCpf ||
-                        values.studentCpf === values.fatherCpf ||
-                        values.motherCpf === values.fatherCpf
+                        values.studentCpf.replace(/\D/g, "") ===
+                            values.motherCpf.replace(/\D/g, "") ||
+                        values.studentCpf.replace(/\D/g, "") ===
+                            values.fatherCpf.replace(/\D/g, "") ||
+                        values.motherCpf.replace(/\D/g, "") ===
+                            values.fatherCpf.replace(/\D/g, "")
                     ) {
                         setIsError(true);
                         setErrorMessage("Os CPFs devem ser diferentes");
@@ -483,9 +490,12 @@ export default function FormGuardian() {
                     }
 
                     if (
-                        values.studentRg === values.motherRg ||
-                        values.studentRg === values.fatherRg ||
-                        values.motherRg === values.fatherRg
+                        values.studentRg.replace(/\D/g, "") ===
+                            values.motherRg.replace(/\D/g, "") ||
+                        values.studentRg.replace(/\D/g, "") ===
+                            values.fatherRg.replace(/\D/g, "") ||
+                        values.motherRg.replace(/\D/g, "") ===
+                            values.fatherRg.replace(/\D/g, "")
                     ) {
                         setIsError(true);
                         setErrorMessage("Os RGs devem ser diferentes");
@@ -591,6 +601,7 @@ export default function FormGuardian() {
                                     type={field.type}
                                     required={field.required}
                                     placeholder={field.placeholder}
+                                    inputType={field.inputType}
                                 />
                             ))}
 
@@ -601,7 +612,7 @@ export default function FormGuardian() {
                                 Enviar
                             </button>
                             {isError ? (
-                                <p className="col-span-2 text-vermelho">
+                                <p className="col-span-2 sm:col-span-1 text-vermelho">
                                     {errorMessage}
                                 </p>
                             ) : null}
