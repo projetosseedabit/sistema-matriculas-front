@@ -473,9 +473,12 @@ export default function FormGuardian() {
                     }
 
                     if (
-                        values.studentCpf === values.motherCpf ||
-                        values.studentCpf === values.fatherCpf ||
-                        values.motherCpf === values.fatherCpf
+                        values.studentCpf.replace(/\D/g, "") ===
+                            values.motherCpf.replace(/\D/g, "") ||
+                        values.studentCpf.replace(/\D/g, "") ===
+                            values.fatherCpf.replace(/\D/g, "") ||
+                        values.motherCpf.replace(/\D/g, "") ===
+                            values.fatherCpf.replace(/\D/g, "")
                     ) {
                         setIsError(true);
                         setErrorMessage("Os CPFs devem ser diferentes");
@@ -483,9 +486,12 @@ export default function FormGuardian() {
                     }
 
                     if (
-                        values.studentRg === values.motherRg ||
-                        values.studentRg === values.fatherRg ||
-                        values.motherRg === values.fatherRg
+                        values.studentRg.replace(/\D/g, "") ===
+                            values.motherRg.replace(/\D/g, "") ||
+                        values.studentRg.replace(/\D/g, "") ===
+                            values.fatherRg.replace(/\D/g, "") ||
+                        values.motherRg.replace(/\D/g, "") ===
+                            values.fatherRg.replace(/\D/g, "")
                     ) {
                         setIsError(true);
                         setErrorMessage("Os RGs devem ser diferentes");
