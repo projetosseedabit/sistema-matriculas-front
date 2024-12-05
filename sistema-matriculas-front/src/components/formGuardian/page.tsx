@@ -565,7 +565,13 @@ export default function FormGuardian() {
                         })
                         .catch((error) => {
                             setIsError(true);
-                            setErrorMessage(error);
+                            if (error instanceof Error) {
+                                setErrorMessage(error.message);
+                            } else {
+                                setErrorMessage(
+                                    "Erro ao criar matrícula, por favor, revise suas informações!"
+                                );
+                            }
                         });
                 }}
                 validationSchema={validationSchema} // esquema de validação yup
