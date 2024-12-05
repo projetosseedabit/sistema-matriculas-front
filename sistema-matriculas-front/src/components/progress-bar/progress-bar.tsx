@@ -7,7 +7,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
   const steps = ["Turmas", "Cadastro", "Pagamento", "Finalizar"]; // Textos abaixo das esferas
 
   return (
-    <div className="flex flex-col items-center my-8 w-full">
+    <div className="flex flex-col items-center my-8 w-full p-4">
       {/* Contêiner principal da barra de progresso */}
       <div className="flex items-center justify-center w-full max-w-4xl relative">
         {Array.from({ length: totalSteps }, (_, index) => {
