@@ -6,6 +6,7 @@ import buildAddress from "@/utils/buildAddress";
 import { useRouter, useSearchParams } from "next/navigation";
 import { InputField } from "../InputField";
 import { useState } from "react";
+import Link from "next/link";
 // import { IsAdultEnum } from "@/app/(user)/forms/page";
 
 function getAgeClassification(birthDate: string): "ADULT" | "MINOR" {
@@ -159,30 +160,28 @@ export default function FormGuardian() {
         "Erro ao criar matrícula, por favor, revise suas informações!"
     );
 
+    const [motherSameAddress, setMotherSameAddress] = useState(false);
+    const [fatherSameAddress, setFatherSameAddress] = useState(false);
+
     type FormField = {
         label: string;
         labelObs?: string;
         name: string;
         type: string;
         required: boolean;
-        placeholder: string;
+        placeholder?: string;
+        colSpan?: number;
         inputType?: "select" | "input";
     };
 
-    const fields: FormField[] = [
+    const studentsFields: FormField[] = [
         {
-            label: "Data de Nascimento",
-            name: "birthDate",
-            type: "date",
-            required: true,
-            placeholder: "Digite a data de nascimento",
-        },
-        {
-            label: "Nome do aluno (a)",
+            label: "Nome completo",
             name: "fullStudentName",
             type: "text",
             required: true,
-            placeholder: "Digite o nome do aluno (a)",
+            placeholder: "Digite seu nome aqui",
+            colSpan: 2,
         },
         {
             label: "Nome social",
@@ -190,86 +189,95 @@ export default function FormGuardian() {
             name: "socialName",
             type: "text",
             required: true,
-            placeholder: "Digite o nome social",
+            placeholder: "Digite seu nome social",
         },
         {
-            label: "CPF do aluno",
+            label: "Data de nascimento",
+            name: "birthDate",
+            type: "date",
+            required: true,
+        },
+        {
+            label: "CPF",
             name: "studentCpf",
             type: "text",
             required: true,
-            placeholder: "Digite o CPF",
+            placeholder: "000.000.000-00",
         },
         {
-            label: "RG do aluno",
+            label: "RG",
             name: "studentRg",
             type: "text",
             required: true,
-            placeholder: "Digite o RG",
+            placeholder: "Digite o seu RG",
         },
         {
-            label: "Telefone do aluno",
+            label: "E-mail",
+            name: "studentEmail",
+            type: "email",
+            required: true,
+            placeholder: "nome@email.com",
+        },
+        {
+            label: "Telefone",
             labelObs: "(com DDD)",
             name: "studentPhone",
             type: "text",
             required: true,
-            placeholder: "Digite o telefone",
+            placeholder: "(00) 9-0000-0000",
         },
         {
-            label: "E-mail do aluno",
-            name: "studentEmail",
-            type: "email",
-            required: true,
-            placeholder: "Digite o e-mail",
-        },
-        {
-            label: "CEP do aluno",
+            label: "CEP",
             name: "studentCep",
             type: "text",
             required: true,
-            placeholder: "Digite o CEP",
+            placeholder: "00000-000",
         },
         {
-            label: "Bairro do aluno",
-            name: "studentNeighborhood",
-            type: "text",
-            required: true,
-            placeholder: "Digite o bairro",
-        },
-        {
-            label: "Cidade do aluno",
-            name: "studentCity",
-            type: "text",
-            required: true,
-            placeholder: "Digite a cidade",
-        },
-        {
-            label: "Estado do aluno",
+            label: "Estado",
             name: "studentState",
             type: "text",
             required: true,
-            placeholder: "Digite o estado",
             inputType: "select",
         },
         {
-            label: "Rua do aluno",
+            label: "Cidade",
+            name: "studentCity",
+            type: "text",
+            required: true,
+            placeholder: "Digite sua cidade",
+        },
+        {
+            label: "Bairro",
+            name: "studentNeighborhood",
+            type: "text",
+            required: true,
+            placeholder: "Digite seu bairro",
+        },
+        {
+            label: "Rua",
             name: "studentRoad",
             type: "text",
             required: true,
-            placeholder: "Digite a rua",
+            placeholder: "Digite sua rua",
         },
         {
             label: "Número da casa",
             name: "studentHouseNumber",
             type: "text",
             required: true,
-            placeholder: "Digite o número da casa",
+            placeholder: "Digite o número da sua casa",
         },
+    ];
+
+    const motherNonAddressFields: FormField[] = [
         {
-            label: "Nome completo da mãe",
+            label: "Nome completo",
             name: "fullMotherName",
             type: "text",
             required: true,
-            placeholder: "Digite o nome completo da mãe",
+            placeholder: "Digite o nome completo",
+            colSpan: 2,
         },
         {
             label: "CPF da mãe",
@@ -286,6 +294,13 @@ export default function FormGuardian() {
             placeholder: "Digite o RG",
         },
         {
+            label: "E-mail da mãe",
+            name: "motherEmail",
+            type: "email",
+            required: true,
+            placeholder: "Digite o e-mail",
+        },
+        {
             label: "Telefone da mãe",
             labelObs: "(com DDD)",
             name: "motherPhone",
@@ -293,13 +308,9 @@ export default function FormGuardian() {
             required: true,
             placeholder: "Digite o telefone",
         },
-        {
-            label: "E-mail da mãe",
-            name: "motherEmail",
-            type: "email",
-            required: true,
-            placeholder: "Digite o e-mail",
-        },
+    ];
+
+    const motherAddressFields: FormField[] = [
         {
             label: "CEP da mãe",
             name: "motherCep",
@@ -343,12 +354,16 @@ export default function FormGuardian() {
             required: true,
             placeholder: "Digite o número da casa",
         },
+    ];
+
+    const fatherNonAddressFields: FormField[] = [
         {
             label: "Nome completo do pai",
             name: "fullFatherName",
             type: "text",
             required: true,
             placeholder: "Digite o nome completo do pai",
+            colSpan: 2,
         },
         {
             label: "CPF do pai",
@@ -365,6 +380,13 @@ export default function FormGuardian() {
             placeholder: "Digite o RG",
         },
         {
+            label: "E-mail do pai",
+            name: "fatherEmail",
+            type: "email",
+            required: true,
+            placeholder: "Digite o e-mail",
+        },
+        {
             label: "Telefone do pai",
             labelObs: "(com DDD)",
             name: "fatherPhone",
@@ -372,13 +394,9 @@ export default function FormGuardian() {
             required: true,
             placeholder: "Digite o telefone",
         },
-        {
-            label: "E-mail do pai",
-            name: "fatherEmail",
-            type: "email",
-            required: true,
-            placeholder: "Digite o e-mail",
-        },
+    ];
+
+    const fatherAddressFields: FormField[] = [
         {
             label: "CEP do pai",
             name: "fatherCep",
@@ -550,72 +568,235 @@ export default function FormGuardian() {
                         paymentMethod: "MERCADO_PAGO",
                     };
 
-                    fetch(
-                        "https://king-prawn-app-3bepj.ondigitalocean.app/forms",
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify(data),
-                            // Envia os dados como uma string JSON
-                        }
-                    )
-                        .then((response) => {
-                            if (!response.ok) {
-                                throw new Error(
-                                    "Erro ao criar matrícula, por favor, revise suas informações!"
-                                );
+                    try {
+                        const response = await fetch(
+                            "https://king-prawn-app-3bepj.ondigitalocean.app/forms",
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify(data),
                             }
+                        );
 
-                            return response.json();
-                        }) // Assume que a resposta será um JSON
-                        .then((result) => {
-                            router.push(result.init_point);
-                        })
-                        .catch((error) => {
+                        const result = await response.json();
+
+                        if ("message" in result) {
                             setIsError(true);
-                            if (error instanceof Error) {
-                                setErrorMessage(error.message);
-                            } else {
-                                setErrorMessage(
-                                    "Erro ao criar matrícula, por favor, revise suas informações!"
-                                );
-                            }
-                        });
+                            setErrorMessage(result.message);
+                            return;
+                        }
+
+                        router.push(result.init_point);
+                    } catch (error) {
+                        setIsError(true);
+                        if (error instanceof Error) {
+                            setErrorMessage(error.message);
+                        } else {
+                            setErrorMessage(
+                                "Erro ao criar matrícula, por favor, revise suas informações!"
+                            );
+                        }
+                    }
                 }}
                 validationSchema={validationSchema} // esquema de validação yup
             >
                 {({ handleSubmit }) => (
-                    <div className="max-w-4xl mx-auto p-8 bg-white border border-gray-300 rounded-md shadow-md">
+                    <div className="w-full">
                         <Form
                             onSubmit={handleSubmit}
-                            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                            className="flex flex-col gap-8"
                         >
-                            {fields.map((field: FormField) => (
-                                <InputField
-                                    key={field.name}
-                                    label={field.label}
-                                    labelObs={field.labelObs}
-                                    name={field.name}
-                                    type={field.type}
-                                    required={field.required}
-                                    placeholder={field.placeholder}
-                                    inputType={field.inputType}
-                                />
-                            ))}
+                            <div className="space-y-3">
+                                <h3 className="font-bold text-2xl text-azul">
+                                    Dados do aluno
+                                </h3>
+                                <div className="grid grid-cols-1 gap-y-3 gap-x-6 sm:grid-cols-2 sm:gap-y-4 sm:gap-x-8">
+                                    {studentsFields.map((field: FormField) => (
+                                        <InputField
+                                            key={field.name}
+                                            label={field.label}
+                                            labelObs={field.labelObs}
+                                            name={field.name}
+                                            type={field.type}
+                                            required={field.required}
+                                            placeholder={
+                                                field.placeholder
+                                                    ? field.placeholder
+                                                    : ""
+                                            }
+                                            inputType={field.inputType}
+                                            colSpan={field.colSpan}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="space-y-3">
+                                <h3 className="font-bold text-2xl text-azul">
+                                    Dados da Mãe
+                                </h3>
+                                <div className="grid grid-cols-1 gap-y-3 gap-x-6 sm:grid-cols-2 sm:gap-y-4 sm:gap-x-8">
+                                    {motherNonAddressFields.map(
+                                        (field: FormField) => (
+                                            <InputField
+                                                key={field.name}
+                                                label={field.label}
+                                                labelObs={field.labelObs}
+                                                name={field.name}
+                                                type={field.type}
+                                                required={field.required}
+                                                placeholder={
+                                                    field.placeholder
+                                                        ? field.placeholder
+                                                        : ""
+                                                }
+                                                inputType={field.inputType}
+                                                colSpan={field.colSpan}
+                                            />
+                                        )
+                                    )}
+                                    {/* <div className="col-span-2 flex gap-3 items-center font-medium text-azul"> */}
+                                    <div className="col-span-2 hidden  gap-3 items-center font-medium text-azul">
+                                        Deseja utilizar o mesmo endereço do
+                                        aluno?
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="checkbox"
+                                                onChange={() =>
+                                                    setMotherSameAddress(
+                                                        !motherSameAddress
+                                                    )
+                                                }
+                                                id="motherSameAddress"
+                                                hidden
+                                            />
+                                            <label
+                                                htmlFor="motherSameAddress"
+                                                className={`cursor-pointer border ${
+                                                    motherSameAddress
+                                                        ? "bg-lime-100 border-lime-600 text-lime-600 hover:bg-lime-200 hover:border-lime-700 hover:text-lime-700"
+                                                        : "bg-transparent border-azul text-azul hover:bg-azul/20 hover:border-azul hover:text-azul"
+                                                } px-2 py-1 rounded-full transition-colors`}
+                                            >
+                                                Sim
+                                            </label>
+                                        </div>
+                                    </div>
 
-                            <button
-                                type="submit"
-                                className="bg-[#FFA12B] text-white px-8 py-4 rounded-md w-full sm:w-auto font-montserrat font-medium text-[18px] sm:text-[20px] lg:text-[22px] transition-all duration-200`"
-                            >
-                                Enviar
-                            </button>
+                                    {motherAddressFields.map(
+                                        (field: FormField) => (
+                                            <InputField
+                                                key={field.name}
+                                                label={field.label}
+                                                name={field.name}
+                                                type={field.type}
+                                                required={field.required}
+                                                placeholder={
+                                                    field.placeholder
+                                                        ? field.placeholder
+                                                        : ""
+                                                }
+                                                inputType={field.inputType}
+                                                disabled={motherSameAddress}
+                                                colSpan={field.colSpan}
+                                            />
+                                        )
+                                    )}
+                                </div>
+                            </div>
+                            <div className="space-y-3">
+                                <h3 className="font-bold text-2xl text-azul">
+                                    Dados do Pai
+                                </h3>
+                                <div className="grid grid-cols-1 gap-y-3 gap-x-6 sm:grid-cols-2 sm:gap-y-4 sm:gap-x-8">
+                                    {fatherNonAddressFields.map(
+                                        (field: FormField) => (
+                                            <InputField
+                                                key={field.name}
+                                                label={field.label}
+                                                labelObs={field.labelObs}
+                                                name={field.name}
+                                                type={field.type}
+                                                required={field.required}
+                                                placeholder={
+                                                    field.placeholder
+                                                        ? field.placeholder
+                                                        : ""
+                                                }
+                                                inputType={field.inputType}
+                                                colSpan={field.colSpan}
+                                            />
+                                        )
+                                    )}
+                                    {/* <div className="col-span-2 flex gap-3 items-center font-medium text-azul">  */}
+                                    <div className="col-span-2 hidden gap-3 items-center font-medium text-azul">
+                                        Deseja utilizar o mesmo endereço do
+                                        aluno?
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="checkbox"
+                                                onChange={() =>
+                                                    setFatherSameAddress(
+                                                        !fatherSameAddress
+                                                    )
+                                                }
+                                                id="fatherSameAddress"
+                                                hidden
+                                            />
+                                            <label
+                                                htmlFor="fatherSameAddress"
+                                                className={`cursor-pointer border ${
+                                                    fatherSameAddress
+                                                        ? "bg-lime-100 border-lime-600 text-lime-600 hover:bg-lime-200 hover:border-lime-700 hover:text-lime-700"
+                                                        : "bg-transparent border-azul text-azul hover:bg-azul/20 hover:border-azul hover:text-azul"
+                                                } px-2 py-1 rounded-full transition-colors`}
+                                            >
+                                                Sim
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    {fatherAddressFields.map(
+                                        (field: FormField) => (
+                                            <InputField
+                                                key={field.name}
+                                                label={field.label}
+                                                name={field.name}
+                                                type={field.type}
+                                                required={field.required}
+                                                placeholder={
+                                                    field.placeholder
+                                                        ? field.placeholder
+                                                        : ""
+                                                }
+                                                inputType={field.inputType}
+                                                disabled={fatherSameAddress}
+                                                colSpan={field.colSpan}
+                                            />
+                                        )
+                                    )}
+                                </div>
+                            </div>
                             {isError ? (
                                 <p className="col-span-2 sm:col-span-1 text-vermelho">
                                     {errorMessage}
                                 </p>
                             ) : null}
+                            <div className="flex justify-between items-center">
+                                <Link
+                                    href="/"
+                                    className="bg-transparent border-[1.5px] border-laranja hover:bg-laranja/20 text-laranja px-4 py-2 rounded-md w-full sm:w-auto font-medium text-lg sm:text-xl transition-colors duration-200"
+                                >
+                                    Voltar
+                                </Link>
+                                <button
+                                    type="submit"
+                                    className="bg-laranja text-white px-4 py-2 rounded-md w-full sm:w-auto font-medium text-lg sm:text-xl transition-colors duration-200"
+                                >
+                                    Enviar
+                                </button>
+                            </div>
                         </Form>
                     </div>
                 )}
