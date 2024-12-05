@@ -1,5 +1,16 @@
 import { ErrorMessage, Field } from "formik";
 
+type InputFieldProps = {
+    label: string;
+    labelObs?: string;
+    required?: boolean;
+    name: string;
+    type: string;
+    placeholder: string;
+    inputType?: "select" | "input";
+    colSpan?: number;
+} & React.InputHTMLAttributes<HTMLInputElement>;
+
 export function InputField({
     label,
     labelObs,
@@ -8,18 +19,15 @@ export function InputField({
     type,
     placeholder,
     inputType = "input",
-}: {
-    label: string;
-    labelObs?: string;
-    required?: boolean;
-    name: string;
-    type: string;
-    placeholder: string;
-    inputType?: "select" | "input";
-}) {
+    colSpan,
+    ...rest
+}: InputFieldProps) {
     return (
-        <div>
-            <label className="text-gray-700 font-medium mb-1" htmlFor={name}>
+        <div className={`col-span-1 ${colSpan === 2 ? "sm:col-span-2" : null}`}>
+            <label
+                className="text-azul font-semibold mb-1 block"
+                htmlFor={name}
+            >
                 {label}
                 {labelObs ? (
                     <span className="text-sm"> {labelObs}</span>
@@ -33,7 +41,8 @@ export function InputField({
                 name={name}
                 placeholder={placeholder}
                 id={name}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border-[1.5px] border-azul rounded-md focus:outline-none focus:ring-1 focus:ring-azul disabled:bg-gray-200 disabled:text-gray-100 disabled:cursor-not-allowed"
+                {...rest}
             >
                 {inputType === "select" ? (
                     <>
