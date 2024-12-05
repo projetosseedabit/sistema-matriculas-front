@@ -166,6 +166,7 @@ export default function FormGuardian() {
         type: string;
         required: boolean;
         placeholder: string;
+        inputType?: "select" | "input";
     };
 
     const fields: FormField[] = [
@@ -247,6 +248,7 @@ export default function FormGuardian() {
             type: "text",
             required: true,
             placeholder: "Digite o estado",
+            inputType: "select",
         },
         {
             label: "Rua do aluno",
@@ -325,6 +327,7 @@ export default function FormGuardian() {
             type: "text",
             required: true,
             placeholder: "Digite o estado",
+            inputType: "select",
         },
         {
             label: "Rua da mãe",
@@ -403,6 +406,7 @@ export default function FormGuardian() {
             type: "text",
             required: true,
             placeholder: "Digite o estado",
+            inputType: "select",
         },
         {
             label: "Rua do pai",
@@ -597,6 +601,7 @@ export default function FormGuardian() {
                                     type={field.type}
                                     required={field.required}
                                     placeholder={field.placeholder}
+                                    inputType={field.inputType}
                                 />
                             ))}
 
@@ -607,7 +612,7 @@ export default function FormGuardian() {
                                 Enviar
                             </button>
                             {isError ? (
-                                <p className="col-span-2 text-vermelho">
+                                <p className="col-span-2 sm:col-span-1 text-vermelho">
                                     {errorMessage}
                                 </p>
                             ) : null}
