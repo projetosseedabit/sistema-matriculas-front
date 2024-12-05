@@ -599,11 +599,12 @@ export default function FormGuardian() {
                         );
 
                         const result = await response.json();
-
-                        if ("message" in result) {
-                            setIsError(true);
-                            setErrorMessage(result.message);
-                            return;
+                        if (!response.ok) {
+                            if ("message" in result) {
+                                setIsError(true);
+                                setErrorMessage(result.message);
+                                return;
+                            }
                         }
 
                         router.push(result.init_point);
