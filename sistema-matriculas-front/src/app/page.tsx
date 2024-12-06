@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { ClassCard } from "@/components/class-card/class-card";
 import Header from "../components/header";
 import { ProgressBar } from "@/components/progress-bar/progress-bar";
-import { Button } from "@/components/Button";
 import Link from "next/link";
 
 interface Class {
@@ -155,12 +154,15 @@ export default function RootLayout() {
                                   }`
                                 : "#"
                         }
+                        onClick={(e) => {
+                            if (selectedOption === null) {
+                                e.preventDefault();
+                            }
+                        }}
+                        data-disabled={selectedOption === null}
+                        className="text-center text-white data-[disabled=true]:bg-gray-500 data-[disabled=true]:text-gray-100 data-[disabled=true]:cursor-not-allowed px-4 py-1 rounded-md w-full sm:w-auto font-medium text-lg sm:text-xl lg:text-2xl transition-all bg-laranja hover:bg-[#E38714]"
                     >
-                        <Button
-                            color="bg-[#FFA12B]"
-                            label="Avançar"
-                            disabled={selectedOption === null}
-                        />
+                        Próximo
                     </Link>
                 </div>
             </main>
