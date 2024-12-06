@@ -40,7 +40,8 @@ export function InputField({
                 name={name}
                 placeholder={placeholder}
                 id={name}
-                className="w-full px-4 py-2 border-[1.5px] border-azul rounded-md focus:outline-none focus:ring-1 focus:ring-azul disabled:bg-gray-200 disabled:text-gray-600 disabled:cursor-not-allowed"
+                data-error={error !== null && touched}
+                className="w-full px-4 py-2 border-[1.5px] border-azul rounded-md focus:outline-none focus:ring-1 focus:ring-azul disabled:bg-gray-200 disabled:text-gray-600 disabled:cursor-not-allowed data-[error=true]:border-vermelho"
                 {...rest}
             />
             {error !== "" && touched ? (
