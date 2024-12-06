@@ -69,7 +69,7 @@ export const AdminClassCard: React.FC<ClassCardProps> = ({
                 <div className="flex gap-4">
                     <Link
                         href={`/admin/turmas/editar/${id}`}
-                        className="transition-colors bg-laranja hover:bg-[#E58000] rounded-full w-7 h-7 flex items-center justify-center shadow"
+                        className="transition-colors bg-laranja hover:bg-[#E38714] rounded-full w-7 h-7 flex items-center justify-center shadow"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

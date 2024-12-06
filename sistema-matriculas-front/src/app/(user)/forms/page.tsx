@@ -2,8 +2,6 @@
 import React, { Suspense, useState } from "react";
 import { CardStudentType } from "@/components/card-student-type/CardStudentType";
 import { ProgressBar } from "@/components/progress-bar/progress-bar"; // Importe o componente da barra de progresso
-import { Button } from "@/components//Button";
-import Link from "next/link";
 // import { ModeEnum } from "../../page";
 // import FormStudent from "@/components/formStudent/page.";
 import FormGuardian from "@/components/formGuardian/page";
@@ -40,8 +38,8 @@ export default function Forms() {
     };
 
     const ContractBox = () => (
-        <div className="border-2 border-azul rounded-md px-4 sm:px-6 lg:px-8 py-5 bg-branco text-gray-700 mx-4 sm:mx-8 md:mx-16 lg:mx-60 h-96 overflow-y-auto">
-            <p className="text-base sm:text-lg lg:text-xl font-normal leading-relaxed">
+        <div className="border-2 border-azul rounded-md px-4 sm:px-6 lg:px-8 py-5 bg-branco text-gray-700 mx-4 sm:mx-8 md:mx-16 lg:mx-60 h-96 overflow-y-auto text-xs sm:text-sm lg:text-base font-normal leading-relaxed">
+            <p>
                 Eu, CONTRATANTE, AUTORIZO o uso da imagem do meu filho(a)/ minha
                 imagem em todo e qualquer material entre imagens de vídeo,
                 fotos, documentos, entre outros, nos canais de comunicação
@@ -112,16 +110,16 @@ export default function Forms() {
         return (
             <label
                 htmlFor="acceptContract"
-                className="border-sky-950 border-2 rounded-md px-4 sm:px-6 lg:px-8 py-5 mx-4 sm:mx-8 md:mx-16 lg:mx-32 xl:mx-60 flex items-center space-x-4 sm:space-x-6"
+                className="border-azul border-2 rounded-md px-4 sm:px-6 lg:px-8 py-5 mx-4 sm:mx-8 md:mx-16 lg:mx-32 xl:mx-60 flex items-center space-x-4 sm:space-x-6"
             >
                 <input
                     type="radio"
-                    className="accent-sky-950 scale-125"
+                    className="accent-azul scale-125"
                     checked={isChecked}
                     onChange={handleCheckboxChange}
                     id="acceptContract"
                 />
-                <p className="text-sky-950 text-base sm:text-lg lg:text-1xl xl:text-2xl font-normal">
+                <p className="text-azul text-base sm:text-lg lg:text-1xl xl:text-2xl font-normal">
                     Eu aceito os termos do contrato.
                 </p>
             </label>
@@ -130,14 +128,8 @@ export default function Forms() {
 
     return (
         <>
-            {/* Barra de progresso entre a navbar e o formulário */}
-            <ProgressBar currentStep={2} />{" "}
-            {/* Passando o estado atual para a barra de progresso */}
+            <ProgressBar currentStep={2} />
             <main className="mb-8">
-                <h1 className="text-sky-950 text-4xl text-center font-light py-8">
-                    Preencha o formulário
-                </h1>
-
                 <div className="space-y-8">
                     <CardStudentType
                         label="Sou maior de idade, sou meu próprio responsável financeiro e quero me inscrever para a Isolada de Redação VK."
@@ -156,7 +148,7 @@ export default function Forms() {
                 </div>
 
                 <div className="mt-10 space-y-8">
-                    <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+                    <h2 className="text-azul text-2xl text-center font-bold py-4">
                         Minuta do contrato
                     </h2>
                     <ContractBox />
@@ -166,15 +158,12 @@ export default function Forms() {
                         }
                     />
                     <div className="flex flex-col items-center sm:flex-col sm:justify-items-center mx-4 sm:mx-8 lg:mx-60 mt-8 space-y-4 sm:space-y-0 sm:space-x-4 gap-16">
-                        <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+                        <h2 className="text-azul text-3xl text-center font-light py-4">
                             Preencha o Formulário
                         </h2>
                         <Suspense>
                             <FormGuardian />
                         </Suspense>
-                        <Link href="/">
-                            <Button color="bg-[#003960]" label="Voltar" />
-                        </Link>
                     </div>
                 </div>
             </main>

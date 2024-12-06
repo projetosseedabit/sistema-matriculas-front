@@ -130,7 +130,7 @@ const LoginPage: React.FC = () => {
                     </div>
                     <button
                         type="submit"
-                        className="bg-laranja hover:bg-orange-600 text-white py-2 px-4 rounded w-full flex items-center justify-center"
+                        className="bg-laranja hover:bg-[#E38714] text-white py-2 px-4 rounded w-full flex items-center justify-center"
                         disabled={loading}
                     >
                         {loading ? (
