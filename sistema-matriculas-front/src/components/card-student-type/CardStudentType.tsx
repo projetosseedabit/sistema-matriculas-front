@@ -31,7 +31,7 @@ export const CardStudentType: React.FC<CardStudentTypeProps> = ({
                 onChange={() => onChange(value)}
                 id={value}
             />
-            <p className="text-sky-950 sm:text-xl font-normal">{label}</p>
+            <p className="text-azul sm:text-xl font-normal">{label}</p>
         </label>
     );
 };

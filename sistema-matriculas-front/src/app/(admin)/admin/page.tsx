@@ -216,7 +216,7 @@ export default function AdminPage() {
                                             String(classItem.id)
                                         )
                                     }
-                                    className="font-montserrat text-white px-4 py-2 hover:bg-sky-950 cursor-pointer"
+                                    className="font-montserrat text-white px-4 py-2 hover:bg-azul cursor-pointer"
                                 >
                                     {classItem.fullName}
                                 </li>
