@@ -9,6 +9,12 @@ import { useState } from "react";
 import Link from "next/link";
 // import { IsAdultEnum } from "@/app/(user)/forms/page";
 
+function verifyEmail(email: string) {
+    const emailRegex =
+        /^(?!\.)(?!.*\.\.)([A-Z0-9_'+\-\.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9\-]*\.)+[A-Z]{2,}$/i;
+    return emailRegex.test(email);
+}
+
 function getAgeClassification(birthDate: string): "ADULT" | "MINOR" {
     const today: Date = new Date();
     const birth: Date = new Date(birthDate);
@@ -96,7 +102,11 @@ const validationSchema = Yup.object().shape({
     }),
     studentEmail: Yup.string()
         .email("Digite um e-mail válido")
-        .required("Campo obrigatório"),
+        .required("Campo obrigatório")
+        .test({
+            test: verifyEmail,
+            message: "Digite um e-mail válido",
+        }),
     studentCep: Yup.string().required("Campo obrigatório").test({
         test: validateCep,
         message: "Digite um CEP válido",
@@ -117,7 +127,11 @@ const validationSchema = Yup.object().shape({
     }),
     motherEmail: Yup.string()
         .email("Digite um e-mail válido")
-        .required("Campo obrigatório"),
+        .required("Campo obrigatório")
+        .test({
+            test: verifyEmail,
+            message: "Digite um e-mail válido",
+        }),
     motherCep: Yup.string().required("Campo obrigatório").test({
         test: validateCep,
         message: "Digite um CEP válido",
@@ -138,7 +152,11 @@ const validationSchema = Yup.object().shape({
     }),
     fatherEmail: Yup.string()
         .email("Digite um e-mail válido")
-        .required("Campo obrigatório"),
+        .required("Campo obrigatório")
+        .test({
+            test: verifyEmail,
+            message: "Digite um e-mail válido",
+        }),
     fatherCep: Yup.string().required("Campo obrigatório").test({
         test: validateCep,
         message: "Digite um CEP válido",
@@ -581,11 +599,12 @@ export default function FormGuardian() {
                         );
 
                         const result = await response.json();
-
-                        if ("message" in result) {
-                            setIsError(true);
-                            setErrorMessage(result.message);
-                            return;
+                        if (!response.ok) {
+                            if ("message" in result) {
+                                setIsError(true);
+                                setErrorMessage(result.message);
+                                return;
+                            }
                         }
 
                         router.push(result.init_point);
@@ -656,8 +675,8 @@ export default function FormGuardian() {
                                             />
                                         )
                                     )}
-                                    {/* <div className="col-span-2 flex gap-3 items-center font-medium text-azul"> */}
-                                    <div className="col-span-2 hidden  gap-3 items-center font-medium text-azul">
+                                    <div className="sm:col-span-2 col-span-1 flex gap-3 items-center font-medium text-azul">
+                                        {/* <div className="col-span-2 hidden  gap-3 items-center font-medium text-azul"> */}
                                         Deseja utilizar o mesmo endereço do
                                         aluno?
                                         <div className="flex gap-2">
@@ -729,8 +748,8 @@ export default function FormGuardian() {
                                             />
                                         )
                                     )}
-                                    {/* <div className="col-span-2 flex gap-3 items-center font-medium text-azul">  */}
-                                    <div className="col-span-2 hidden gap-3 items-center font-medium text-azul">
+                                    <div className="sm:col-span-2 col-span-1 flex gap-3 items-center font-medium text-azul">
+                                        {/* <div className="col-span-2 hidden gap-3 items-center font-medium text-azul"> */}
                                         Deseja utilizar o mesmo endereço do
                                         aluno?
                                         <div className="flex gap-2">
@@ -783,16 +802,16 @@ export default function FormGuardian() {
                                     {errorMessage}
                                 </p>
                             ) : null}
-                            <div className="flex justify-between items-center">
+                            <div className="flex justify-between items-center gap-4">
                                 <Link
                                     href="/"
-                                    className="bg-transparent border-[1.5px] border-laranja hover:bg-laranja/20 text-laranja px-4 py-2 rounded-md w-full sm:w-auto font-medium text-lg sm:text-xl transition-colors duration-200"
+                                    className="bg-transparent border-2 border-laranja hover:bg-laranja/20 text-laranja px-4 py-2 rounded-md font-medium sm:text-xl transition-colors duration-200 w-full text-center"
                                 >
                                     Voltar
                                 </Link>
                                 <button
                                     type="submit"
-                                    className="bg-laranja text-white px-4 py-2 rounded-md w-full sm:w-auto font-medium text-lg sm:text-xl transition-colors duration-200"
+                                    className="bg-laranja text-white px-4 py-2 rounded-md sm:w-auto font-medium text-lg sm:text-xl transition-colors duration-200 block w-full"
                                 >
                                     Enviar
                                 </button>
