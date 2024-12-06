@@ -157,10 +157,7 @@ export default function Forms() {
                             console.log("Confirmação:", isChecked)
                         }
                     />
-                    <div className="flex flex-col items-center sm:flex-col sm:justify-items-center mx-4 sm:mx-8 lg:mx-60 mt-8 space-y-4 sm:space-y-0 sm:space-x-4 gap-16">
-                        <h2 className="text-azul text-3xl text-center font-light py-4">
-                            Preencha o Formulário
-                        </h2>
+                    <div className="flex flex-col items-center sm:flex-col sm:justify-items-center mx-4 sm:mx-8 lg:mx-60 mt-8 gap-4">
                         <Suspense>
                             <FormGuardian />
                         </Suspense>
