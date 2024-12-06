@@ -112,16 +112,16 @@ export default function Forms() {
         return (
             <label
                 htmlFor="acceptContract"
-                className="border-sky-950 border-2 rounded-md px-4 sm:px-6 lg:px-8 py-5 mx-4 sm:mx-8 md:mx-16 lg:mx-32 xl:mx-60 flex items-center space-x-4 sm:space-x-6"
+                className="border-azul border-2 rounded-md px-4 sm:px-6 lg:px-8 py-5 mx-4 sm:mx-8 md:mx-16 lg:mx-32 xl:mx-60 flex items-center space-x-4 sm:space-x-6"
             >
                 <input
                     type="radio"
-                    className="accent-sky-950 scale-125"
+                    className="accent-azul scale-125"
                     checked={isChecked}
                     onChange={handleCheckboxChange}
                     id="acceptContract"
                 />
-                <p className="text-sky-950 text-base sm:text-lg lg:text-1xl xl:text-2xl font-normal">
+                <p className="text-azul text-base sm:text-lg lg:text-1xl xl:text-2xl font-normal">
                     Eu aceito os termos do contrato.
                 </p>
             </label>
@@ -134,7 +134,7 @@ export default function Forms() {
             <ProgressBar currentStep={2} />{" "}
             {/* Passando o estado atual para a barra de progresso */}
             <main className="mb-8">
-                <h1 className="text-sky-950 text-4xl text-center font-light py-8">
+                <h1 className="text-azul text-4xl text-center font-light py-8">
                     Preencha o formulário
                 </h1>
 
@@ -157,7 +157,7 @@ export default function Forms() {
 
                 {selectedOption === "overEighteen" && (
                     <div className="mt-10 space-y-8">
-                        <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+                        <h2 className="text-azul text-3xl text-center font-light py-4">
                             Minuta do contrato
                         </h2>
                         <ContractBox />
@@ -167,7 +167,7 @@ export default function Forms() {
                             }
                         />
                         <div className="flex flex-col items-center sm:flex-col sm:justify-items-center mx-4 sm:mx-8 lg:mx-60 mt-8 space-y-4 sm:space-y-0 sm:space-x-4 gap-16">
-                            <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+                            <h2 className="text-azul text-3xl text-center font-light py-4">
                                 Preencha o Formulário
                             </h2>
                             <FormStudentAdmin />
@@ -180,7 +180,7 @@ export default function Forms() {
 
                 {selectedOption === "underage" && (
                     <div className="mt-10 space-y-8">
-                        <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+                        <h2 className="text-azul text-3xl text-center font-light py-4">
                             Minuta do contrato
                         </h2>
                         <ContractBox />
@@ -190,7 +190,7 @@ export default function Forms() {
                             }
                         />
                         <div className="flex flex-col items-center sm:flex-col sm:justify-items-center mx-4 sm:mx-8 lg:mx-60 mt-8 space-y-4 sm:space-y-0 sm:space-x-4 gap-16">
-                            <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+                            <h2 className="text-azul text-3xl text-center font-light py-4">
                                 Preencha o Formulário
                             </h2>
                             <FormGuardianAdmin />
