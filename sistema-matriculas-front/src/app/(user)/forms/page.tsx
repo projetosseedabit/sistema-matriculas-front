@@ -38,8 +38,8 @@ export default function Forms() {
     };
 
     const ContractBox = () => (
-        <div className="border-2 border-azul rounded-md px-4 sm:px-6 lg:px-8 py-5 bg-branco text-gray-700 mx-4 sm:mx-8 md:mx-16 lg:mx-60 h-96 overflow-y-auto">
-            <p className="text-base sm:text-lg lg:text-xl font-normal leading-relaxed">
+        <div className="border-2 border-azul rounded-md px-4 sm:px-6 lg:px-8 py-5 bg-branco text-gray-700 mx-4 sm:mx-8 md:mx-16 lg:mx-60 h-96 overflow-y-auto text-xs sm:text-sm lg:text-base font-normal leading-relaxed">
+            <p>
                 Eu, CONTRATANTE, AUTORIZO o uso da imagem do meu filho(a)/ minha
                 imagem em todo e qualquer material entre imagens de vídeo,
                 fotos, documentos, entre outros, nos canais de comunicação
@@ -128,14 +128,8 @@ export default function Forms() {
 
     return (
         <>
-            {/* Barra de progresso entre a navbar e o formulário */}
-            <ProgressBar currentStep={2} />{" "}
-            {/* Passando o estado atual para a barra de progresso */}
+            <ProgressBar currentStep={2} />
             <main className="mb-8">
-                <h1 className="text-sky-950 text-4xl text-center font-light py-8">
-                    Preencha o formulário
-                </h1>
-
                 <div className="space-y-8">
                     <CardStudentType
                         label="Sou maior de idade, sou meu próprio responsável financeiro e quero me inscrever para a Isolada de Redação VK."
@@ -154,7 +148,7 @@ export default function Forms() {
                 </div>
 
                 <div className="mt-10 space-y-8">
-                    <h2 className="text-sky-950 text-3xl text-center font-light py-4">
+                    <h2 className="text-sky-950 text-2xl text-center font-bold py-4">
                         Minuta do contrato
                     </h2>
                     <ContractBox />

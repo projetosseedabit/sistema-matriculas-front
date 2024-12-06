@@ -776,7 +776,7 @@ export default function FormGuardian() {
                                         motherSameAddress
                                             ? "bg-lime-100 border-lime-600 text-lime-600 hover:bg-lime-200 hover:border-lime-700 hover:text-lime-700"
                                             : "bg-transparent border-azul text-azul hover:bg-azul/20 hover:border-azul hover:text-azul"
-                                    } px-2 py-1 rounded-full transition-colors`}
+                                    } px-2 py-[1px] rounded-full transition-colors`}
                                 >
                                     Sim
                                 </label>
@@ -904,7 +904,7 @@ export default function FormGuardian() {
                                         fatherSameAddress
                                             ? "bg-lime-100 border-lime-600 text-lime-600 hover:bg-lime-200 hover:border-lime-700 hover:text-lime-700"
                                             : "bg-transparent border-azul text-azul hover:bg-azul/20 hover:border-azul hover:text-azul"
-                                    } px-2 py-1 rounded-full transition-colors`}
+                                    } px-2 py-[1px] rounded-full transition-colors`}
                                 >
                                     Sim
                                 </label>

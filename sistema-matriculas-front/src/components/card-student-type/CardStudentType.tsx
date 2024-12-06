@@ -18,11 +18,11 @@ export const CardStudentType: React.FC<CardStudentTypeProps> = ({
     return (
         <label
             htmlFor={value}
-            className="border-sky-950 border-2 rounded-md px-8 py-5 mx-4 sm:mx-8 lg:mx-60 flex items-center space-x-4 sm:space-x-8"
+            className="border-azul border-2 rounded-md px-4 py-3 sm:px-8 sm:py-5 mx-4 sm:mx-8 lg:mx-60 flex items-center space-x-4 sm:space-x-8"
         >
             <input
                 type="radio"
-                className={`accent-sky-950 ${
+                className={`accent-azul ${
                     checked ? "scale-125" : "scale-100"
                 } transition-all duration-200`} // Ajuste de escala com transição suave
                 name={name}
@@ -31,9 +31,7 @@ export const CardStudentType: React.FC<CardStudentTypeProps> = ({
                 onChange={() => onChange(value)}
                 id={value}
             />
-            <p className="text-sky-950 text-xl sm:text-2xl font-normal">
-                {label}
-            </p>
+            <p className="text-sky-950 sm:text-xl font-normal">{label}</p>
         </label>
     );
 };
