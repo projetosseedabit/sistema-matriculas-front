@@ -680,6 +680,7 @@ export default function FormGuardian() {
                                             field.name as keyof typeof formik.touched
                                         ]
                                     }
+                                    onBlur={formik.handleBlur}
                                 />
                             ) : (
                                 <InputField
@@ -711,6 +712,7 @@ export default function FormGuardian() {
                                             field.name as keyof typeof formik.touched
                                         ]
                                     }
+                                    onBlur={formik.handleBlur}
                                 />
                             )
                         )}
@@ -749,6 +751,7 @@ export default function FormGuardian() {
                                         field.name as keyof typeof formik.touched
                                     ]
                                 }
+                                onBlur={formik.handleBlur}
                             />
                         ))}
                         <div className="sm:col-span-2 col-span-1 flex gap-3 items-center font-medium text-azul">
@@ -808,6 +811,7 @@ export default function FormGuardian() {
                                             field.name as keyof typeof formik.touched
                                         ]
                                     }
+                                    onBlur={formik.handleBlur}
                                 />
                             ) : (
                                 <InputField
@@ -839,6 +843,7 @@ export default function FormGuardian() {
                                             field.name as keyof typeof formik.touched
                                         ]
                                     }
+                                    onBlur={formik.handleBlur}
                                 />
                             )
                         )}
@@ -877,6 +882,7 @@ export default function FormGuardian() {
                                         field.name as keyof typeof formik.touched
                                     ]
                                 }
+                                onBlur={formik.handleBlur}
                             />
                         ))}
                         <div className="sm:col-span-2 col-span-1 flex gap-3 items-center font-medium text-azul">
@@ -939,6 +945,7 @@ export default function FormGuardian() {
                                         field.name as keyof typeof formik.touched
                                     ]
                                 }
+                                onBlur={formik.handleBlur}
                             />
                         ))}
                     </div>
