@@ -2,8 +2,6 @@
 import React, { Suspense, useState } from "react";
 import { CardStudentType } from "@/components/card-student-type/CardStudentType";
 import { ProgressBar } from "@/components/progress-bar/progress-bar"; // Importe o componente da barra de progresso
-import { Button } from "@/components//Button";
-import Link from "next/link";
 // import { ModeEnum } from "../../page";
 // import FormStudent from "@/components/formStudent/page.";
 import FormGuardian from "@/components/formGuardian/page";
@@ -172,9 +170,6 @@ export default function Forms() {
                         <Suspense>
                             <FormGuardian />
                         </Suspense>
-                        <Link href="/">
-                            <Button color="bg-[#003960]" label="Voltar" />
-                        </Link>
                     </div>
                 </div>
             </main>
