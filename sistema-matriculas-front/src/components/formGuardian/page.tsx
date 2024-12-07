@@ -174,7 +174,7 @@ export default function FormGuardian() {
     const classId = searchParams.get("classId");
     const mode = searchParams.get("mode");
     const router = useRouter();
-    const [isError, setIsError] = useState(false);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState(
         "Erro ao criar matrícula, por favor, revise suas informações!"
     );
@@ -190,16 +190,17 @@ export default function FormGuardian() {
         "CREDIT_CARD" | "PIX" | ""
     >("");
     const [triedSubmit, setTriedSubmit] = useState(false);
+    const [isPixWarningOpen, setIsPixWarningOpen] = useState(false);
 
     async function getClassInfo() {
-        setIsError(false);
+        setIsPopupOpen(false);
         setIsClassError(false);
 
         const response = await fetch(
             `https://king-prawn-app-3bepj.ondigitalocean.app/class/${classId}`
         );
         if (!response.ok) {
-            setIsError(true);
+            setIsPopupOpen(true);
             setErrorMessage(
                 "Erro ao carregar informações da turma, volte ao início e tente novamente."
             );
@@ -224,7 +225,7 @@ export default function FormGuardian() {
                   message: string;
               } = await response.json();
         if ("class" in result && result.class === null) {
-            setIsError(true);
+            setIsPopupOpen(true);
             setErrorMessage(
                 "Turma inválida, volte ao início e tente novamente."
             );
@@ -243,7 +244,7 @@ export default function FormGuardian() {
 
     const formik = useFormik({
         onSubmit: async (values) => {
-            setIsError(false);
+            setIsPopupOpen(false);
             setTriedSubmit(true);
 
             if (paymentMethod === "") {
@@ -255,7 +256,7 @@ export default function FormGuardian() {
                 values.studentEmail === values.fatherEmail ||
                 values.motherEmail === values.fatherEmail
             ) {
-                setIsError(true);
+                setIsPopupOpen(true);
                 setErrorMessage("Os e-mails devem ser diferentes");
                 return;
             }
@@ -268,7 +269,7 @@ export default function FormGuardian() {
                 values.motherCpf.replace(/\D/g, "") ===
                     values.fatherCpf.replace(/\D/g, "")
             ) {
-                setIsError(true);
+                setIsPopupOpen(true);
                 setErrorMessage("Os CPFs devem ser diferentes");
                 return;
             }
@@ -281,7 +282,7 @@ export default function FormGuardian() {
                 values.motherRg.replace(/\D/g, "") ===
                     values.fatherRg.replace(/\D/g, "")
             ) {
-                setIsError(true);
+                setIsPopupOpen(true);
                 setErrorMessage("Os RGs devem ser diferentes");
                 return;
             }
@@ -349,7 +350,7 @@ export default function FormGuardian() {
                 const result = await response.json();
                 if (!response.ok) {
                     if ("message" in result) {
-                        setIsError(true);
+                        setIsPopupOpen(true);
                         setErrorMessage(result.message);
                         return;
                     }
@@ -357,7 +358,7 @@ export default function FormGuardian() {
 
                 router.push(result.init_point);
             } catch (error) {
-                setIsError(true);
+                setIsPopupOpen(true);
                 if (error instanceof Error) {
                     setErrorMessage(error.message);
                 } else {
@@ -713,43 +714,67 @@ export default function FormGuardian() {
     return (
         <>
             <div
-                data-open={isError}
-                className="data-[open=false]:hidden fixed w-screen h-screen top-0 left-0 bg-black/80 flex justify-center items-center m-0"
+                data-open={isPopupOpen}
+                className="data-[open=false]:hidden fixed w-screen h-screen top-0 left-0 bg-black/80 flex justify-center items-center"
             >
-                <div className="bg-white flex flex-col items-center gap-4 px-8 py-4 rounded-lg popup">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="64"
-                        height="65"
-                        fill="none"
-                        viewBox="0 0 64 65"
-                    >
-                        <path
-                            fill="#BB0000"
-                            d="M32 19.417a2.667 2.667 0 0 0-2.667 2.666V32.75a2.667 2.667 0 1 0 5.334 0V22.084A2.667 2.667 0 0 0 32 19.417m2.453 22.987a2 2 0 0 0-.24-.48l-.32-.4a2.67 2.67 0 0 0-2.906-.56c-.324.135-.621.324-.88.56a2.67 2.67 0 0 0-.774 1.893c.005.348.077.693.214 1.013a2.4 2.4 0 0 0 1.44 1.44 2.5 2.5 0 0 0 2.026 0 2.4 2.4 0 0 0 1.44-1.44c.137-.32.21-.665.214-1.013a4 4 0 0 0 0-.534 1.7 1.7 0 0 0-.214-.48M32 6.084a26.667 26.667 0 1 0 0 53.334 26.667 26.667 0 0 0 0-53.334m0 48a21.333 21.333 0 1 1 0-42.667 21.333 21.333 0 0 1 0 42.667"
-                        ></path>
-                    </svg>
-                    <p className="max-w-[18.75rem] w-full text-center text-lg font-medium">
-                        {errorMessage}
-                    </p>
-                    {isClassError ? (
-                        <Link
-                            href="/"
-                            className="px-5 py-1 rounded transition-colors bg-laranja hover:bg-[#E38714] text-branco w-auto"
-                        >
-                            Voltar ao início
-                        </Link>
-                    ) : (
+                {isPixWarningOpen ? (
+                    <div className="bg-white flex flex-col items-center gap-4 px-8 py-4 rounded-lg popup shadow">
+                        <h4 className="font-bold text-2xl text-black">
+                            Pagamento por Pix
+                        </h4>
+                        <p className="max-w-[18.75rem] w-full text-center text-lg font-medium">
+                            Ao finalizar o pagamento no seu banco, envie o
+                            comprovante para o seguinte número
+                        </p>
+                        <p className="font-bold text-lg text-azul">
+                            (81) 9-9938-6788
+                        </p>
                         <button
                             onClick={() => {
-                                setIsError(false);
+                                setIsPopupOpen(false);
+                                setIsPixWarningOpen(false);
                             }}
                             className="px-5 py-1 rounded transition-colors bg-laranja hover:bg-[#E38714] text-branco w-auto"
                         >
                             OK
                         </button>
-                    )}
-                </div>
+                    </div>
+                ) : (
+                    <div className="bg-white flex flex-col items-center gap-4 px-8 py-4 rounded-lg popup shadow">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="64"
+                            height="65"
+                            fill="none"
+                            viewBox="0 0 64 65"
+                        >
+                            <path
+                                fill="#BB0000"
+                                d="M32 19.417a2.667 2.667 0 0 0-2.667 2.666V32.75a2.667 2.667 0 1 0 5.334 0V22.084A2.667 2.667 0 0 0 32 19.417m2.453 22.987a2 2 0 0 0-.24-.48l-.32-.4a2.67 2.67 0 0 0-2.906-.56c-.324.135-.621.324-.88.56a2.67 2.67 0 0 0-.774 1.893c.005.348.077.693.214 1.013a2.4 2.4 0 0 0 1.44 1.44 2.5 2.5 0 0 0 2.026 0 2.4 2.4 0 0 0 1.44-1.44c.137-.32.21-.665.214-1.013a4 4 0 0 0 0-.534 1.7 1.7 0 0 0-.214-.48M32 6.084a26.667 26.667 0 1 0 0 53.334 26.667 26.667 0 0 0 0-53.334m0 48a21.333 21.333 0 1 1 0-42.667 21.333 21.333 0 0 1 0 42.667"
+                            ></path>
+                        </svg>
+                        <p className="max-w-[18.75rem] w-full text-center text-lg font-medium">
+                            {errorMessage}
+                        </p>
+                        {isClassError ? (
+                            <Link
+                                href="/"
+                                className="px-5 py-1 rounded transition-colors bg-laranja hover:bg-[#E38714] text-branco w-auto"
+                            >
+                                Voltar ao início
+                            </Link>
+                        ) : (
+                            <button
+                                onClick={() => {
+                                    setIsPopupOpen(false);
+                                }}
+                                className="px-5 py-1 rounded transition-colors bg-laranja hover:bg-[#E38714] text-branco w-auto"
+                            >
+                                OK
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
 
             <div className="w-full">
@@ -758,7 +783,7 @@ export default function FormGuardian() {
                     className="flex flex-col gap-8"
                 >
                     <div className="space-y-3">
-                        <h3 className="font-bold text-2xl text-azul">
+                        <h3 className="font-bold text-lg sm:text-xl md:text-2xl text-azul">
                             Dados do aluno
                         </h3>
                         <div className="grid grid-cols-1 gap-y-3 gap-x-6 sm:grid-cols-2 sm:gap-y-4 sm:gap-x-8">
@@ -825,7 +850,7 @@ export default function FormGuardian() {
                         </div>
                     </div>
                     <div className="space-y-3">
-                        <h3 className="font-bold text-2xl text-azul">
+                        <h3 className="font-bold text-lg sm:text-xl md:text-2xl text-azul">
                             Dados da Mãe
                         </h3>
                         <div className="grid grid-cols-1 gap-y-3 gap-x-6 sm:grid-cols-2 sm:gap-y-4 sm:gap-x-8">
@@ -958,7 +983,7 @@ export default function FormGuardian() {
                         </div>
                     </div>
                     <div className="space-y-3">
-                        <h3 className="font-bold text-2xl text-azul">
+                        <h3 className="font-bold text-lg sm:text-xl md:text-2xl text-azul">
                             Dados do Pai
                         </h3>
                         <div className="grid grid-cols-1 gap-y-3 gap-x-6 sm:grid-cols-2 sm:gap-y-4 sm:gap-x-8">
@@ -1062,9 +1087,31 @@ export default function FormGuardian() {
                         </div>
                     </div>
                     <div className="space-y-3">
-                        <h3 className="font-bold text-2xl text-azul">
-                            Como você deseja pagar?
-                        </h3>
+                        <div className="flex items-center justify-between">
+                            <h3 className="font-bold text-lg sm:text-xl md:text-2xl text-azul ">
+                                Como você deseja pagar?
+                            </h3>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setIsPixWarningOpen(true);
+                                    setIsPopupOpen(true);
+                                }}
+                            >
+                                <svg
+                                    width="28"
+                                    height="28"
+                                    viewBox="0 0 28 28"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M14.0002 2.33325C20.4437 2.33325 25.6668 7.55642 25.6668 13.9999C25.6668 20.4434 20.4437 25.6666 14.0002 25.6666C7.55666 25.6666 2.3335 20.4434 2.3335 13.9999C2.3335 7.55642 7.55666 2.33325 14.0002 2.33325ZM14.0002 4.66659C11.5248 4.66659 9.15084 5.64992 7.4005 7.40026C5.65016 9.1506 4.66683 11.5246 4.66683 13.9999C4.66683 16.4753 5.65016 18.8492 7.4005 20.5996C9.15084 22.3499 11.5248 23.3333 14.0002 23.3333C16.4755 23.3333 18.8495 22.3499 20.5998 20.5996C22.3502 18.8492 23.3335 16.4753 23.3335 13.9999C23.3335 11.5246 22.3502 9.1506 20.5998 7.40026C18.8495 5.64992 16.4755 4.66659 14.0002 4.66659ZM14.0002 18.6666C14.3096 18.6666 14.6063 18.7895 14.8251 19.0083C15.0439 19.2271 15.1668 19.5238 15.1668 19.8333C15.1668 20.1427 15.0439 20.4394 14.8251 20.6582C14.6063 20.877 14.3096 20.9999 14.0002 20.9999C13.6907 20.9999 13.394 20.877 13.1752 20.6582C12.9564 20.4394 12.8335 20.1427 12.8335 19.8333C12.8335 19.5238 12.9564 19.2271 13.1752 19.0083C13.394 18.7895 13.6907 18.6666 14.0002 18.6666ZM14.0002 7.58325C14.9828 7.58328 15.9348 7.9255 16.6926 8.55112C17.4503 9.17674 17.9666 10.0467 18.1527 11.0116C18.3388 11.9765 18.183 12.976 17.7122 13.8386C17.2415 14.7011 16.485 15.3728 15.5728 15.7383C15.4377 15.7879 15.3159 15.8682 15.217 15.9728C15.1657 16.0311 15.1575 16.1058 15.1587 16.1828L15.1668 16.3333C15.1665 16.6306 15.0526 16.9166 14.8485 17.1328C14.6444 17.3491 14.3654 17.4792 14.0685 17.4966C13.7717 17.514 13.4794 17.4175 13.2514 17.2266C13.0233 17.0358 12.8768 16.765 12.8417 16.4698L12.8335 16.3333V16.0416C12.8335 14.6964 13.9185 13.8891 14.7048 13.5729C15.0249 13.4451 15.304 13.2326 15.5124 12.9581C15.7207 12.6836 15.8504 12.3575 15.8874 12.0149C15.9244 11.6723 15.8673 11.3261 15.7224 11.0134C15.5775 10.7008 15.3502 10.4335 15.0648 10.2403C14.7794 10.0471 14.4468 9.93532 14.1027 9.9169C13.7586 9.89848 13.416 9.97415 13.1116 10.1358C12.8073 10.2974 12.5527 10.5389 12.3752 10.8343C12.1978 11.1297 12.1041 11.4678 12.1043 11.8124C12.1043 12.1218 11.9814 12.4186 11.7626 12.6374C11.5438 12.8562 11.2471 12.9791 10.9377 12.9791C10.6282 12.9791 10.3315 12.8562 10.1127 12.6374C9.89391 12.4186 9.771 12.1218 9.771 11.8124C9.771 10.6908 10.2166 9.61507 11.0097 8.82195C11.8028 8.02882 12.8785 7.58325 14.0002 7.58325Z"
+                                        fill="#003960"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
                         <div>
                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-8">
                                 <button
@@ -1120,6 +1167,8 @@ export default function FormGuardian() {
                                             setPaymentMethod("");
                                         } else {
                                             setPaymentMethod("PIX");
+                                            setIsPixWarningOpen(true);
+                                            setIsPopupOpen(true);
                                         }
                                     }}
                                 >
@@ -1159,11 +1208,6 @@ export default function FormGuardian() {
                             ) : null}
                         </div>
                     </div>
-                    {isError ? (
-                        <p className="col-span-2 sm:col-span-1 text-vermelho">
-                            {errorMessage}
-                        </p>
-                    ) : null}
                     <div className="flex justify-between items-center gap-4">
                         <Link
                             href="/"
